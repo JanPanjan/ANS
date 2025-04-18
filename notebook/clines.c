@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    printf("Usage: ./clines <fastq-file>");
+    printf("Usage: ./clines.out <fastq-file>");
     exit(1);
   }
 
