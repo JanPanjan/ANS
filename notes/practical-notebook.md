@@ -182,6 +182,14 @@ The filtered lines are returned, which we can again pipe into `wc -l`.
 awk 'NR % 4 == 1' SRR30833097.fastq | wc -l
 ```
 
+#### BASH again
+
+Since we can just divide the line count by 4, we can simply run:
+
+```
+$(wc -l SRR30833097.fastq) / 4
+```
+
 #### Python
 
 I made two scripts, one that uses pattern matching like the BASH command and one that uses calculating the mod of line numbers. They are a little more verbose than the other two options, but still pretty straightforward. 
