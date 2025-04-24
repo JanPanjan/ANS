@@ -62,13 +62,3 @@ reads written   : 4,537,365
 ```
 
 [[practical-notebook]]
-
-# Homework questions (not graded)
-
-## What is the aim of the study, described in the scientific article?
-
-## Provide some info about the dataset you will work with and which sequencing technology was used.
-
-## Which kit was used for sequencing library preparation? Does this kit preserve strand information (stranded library) or not?
-
-## What is the advantage of stranded mRNA library preparation compared to non-stranded library?

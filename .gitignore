@@ -1,2 +1,15 @@
-notebook/SRR*
+# code binaries
 *.out
+*.bin
+
+# bioinformatics data formats
+*.fq
+*.fastq
+*.fasta
+*.faa
+*.fna
+*.sra
+*.sam
+*.bam
+*.gff
+*.gtf

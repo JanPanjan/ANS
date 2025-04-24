@@ -1,3 +1,9 @@
+>[!TODO]
+>- [ ] document tools' versions
+>- [ ] multiqc report od vseh
+
+---
+
 # General instructions
 
 Instructions for filling in the worksheets:
@@ -168,9 +174,7 @@ Alternativelly, you can open a **graphical user interface** of FastQC tool by ex
 
 ![[Pasted image 20250418203153.png]]
 
-Click on `File > Open` and select your file. When it's finished, you should see the report.
-
-![[Pasted image 20250418203300.png]]
+Click on `File > Open` and select your file. When it's finished, you should see the report. Click on `File > Save report` and save the report in the working directory as `pre-filtertering_fastqc.html`.
 
 ### Explaining the results
 
@@ -184,7 +188,7 @@ It's important to analyse these results in detail, because these three symbols m
 
 ![[Pasted image 20250421121853.png]]
 
-Nothing we haven't mentioned before, except the `%GC` number, which tells us the overall **GC (guanosine + citosine) content** across all sequences.
+Nothing that hasn't been mentioned before, except the `%GC` number, which tells us the overall **GC (guanosine + citosine) content** across all sequences.
 
 It is the simplest known HI (homology independent) metric used as a genome signiature. It can be easily calculated from sequence data alone. It displays a huge variation across genomes and is reasonably constant within a given genome
 
@@ -252,8 +256,13 @@ There are quite a few duplicate sequences in our dataset, but I am not sure how 
 
 ![[Pasted image 20250421122035.png]]
 
+**Overrepresented sequences** are sequences that are found more frequently than statistical models predict it should occur by chance in a random distribution of sequences of that length.
 
+This model lists all of the sequences which make up more than 0.1 % of the total, but it tracks only the **first 200,000 sequences**, therefore some overrepresented sequences might be missed. Minimum read length is **25bp** and reads longer than **75bp** are **truncated to 50bp**.
 
+The module looks for matches in a database of common contaminants and reports hits if they're found (*possible source* column). If a single sequence is overrepresented, this could mean that it is higly biologically significant or that the library is contaminated. A hit **may** indicate some form of contamination (e.g. adapters). 
+
+There are not hits detected, which could mean that they are less common primers or that some other artifact is present.
 ![[Pasted image 20250421122129.png]]
 
 ## b) Exchange FastQC results with your colleagues and run MultiQC to get a joined report for all datasets
@@ -467,5 +476,37 @@ It's faster by a fraction. Again, not a big difference, but faster nevertheless,
 
 ### c) What about the quality of your reads?
 
-### d) Describe your fastqc and/or multiqc and interpret the results (https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf)
+Modules that failed:
 
+- per base sequence content
+- per base GC content
+- adapter content
+
+The overall quality can be better, which is what we adress in the next section.
+
+### d) [Describe your fastqc and/or multiqc and interpret the results](https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf)
+
+My fastqc report was explained above in the [[practical-notebook#Checking quality of sequences|Checking quality of sequences]] section.
+
+Multiqc report...
+
+# Filtering and trimming based on quality parameters  
+
+This is the **preprocessing** step, where we try and make the quality of our reads better using [fastp](https://github.com/OpenGene/fastp), an ultra-fast all-in-one FASTQ preprocessor. based on the previously generated FastQC report.
+
+First install fastp.
+
+```bash
+$ conda install -c bioconda fastp
+```
+
+The program filters our reads and returns a `fastq` file. We can try running the tool without any flags and check the quality of processed reads.
+
+```bash
+$ fastp -i SRR30833097.fastq -o fastp-out.fq
+$ 
+```
+
+# Downloading the reference genome and an annotation file
+
+# Mapping RNA-seq reads on the genome

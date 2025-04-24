@@ -1,0 +1,8 @@
+{
+    "salmon_version": "0.14.1",
+    "index": "salmon-index/",
+    "libType": "A",
+    "unmatedReads": "../../../fastp-out.fq",
+    "output": "salmon-quant",
+    "auxDir": "aux_info"
+}
