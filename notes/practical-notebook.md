@@ -500,12 +500,15 @@ First install fastp.
 $ conda install -c bioconda fastp
 ```
 
-The program filters our reads and returns a `fastq` file. We can try running the tool without any flags and check the quality of processed reads.
+The program filters our reads and generates a `fastq` file and a `html` report. We can try running the tool without any flags and check the quality of processed reads.
 
 ```bash
 $ fastp -i SRR30833097.fastq -o fastp-out.fq
-$ 
 ```
+
+If we open the report in our browser, we can inspect quality of reads before and after filtering.
+
+
 
 # Downloading the reference genome and an annotation file
 
