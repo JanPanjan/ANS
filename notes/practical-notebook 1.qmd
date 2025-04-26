@@ -1,6 +1,13 @@
->[!TODO]
->- [ ] document tools' versions
->- [ ] multiqc report od vseh
+---
+title: "Practical notebook"
+subtitle: "Analysis od nucleotide sequences"
+author: "Jan Panjan"
+---
+
+::: {.callout-note}
+- [ ] document tools' versions
+- [ ] multiqc report od vseh
+:::
 
 ---
 
@@ -56,21 +63,26 @@ During this course we were tasked to work on the RNA-seq dataset linked to the a
 
 ## BioProject accession number
 
-First thing to do is to find this article on **NCBI** or **PubMed**. This can be done with a quick Google search: https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052. 
+First thing to do is to find this article on **NCBI** or **PubMed**. This can be done with a quick Google search: <https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052>.
 
-In the article, find the section *Data availability*. There will be an accession number for a **BioProject** (a BioProject is a collection of biological data related to a large-scale research effort).
+In the article, find the section *Data availability*. There will be an accession number for a **BioProject** (this is a collection of biological data related to a large-scale research effort).
 
 ## SRA accession number
 
-We can search for sequencing data related to this BioProject through the command line using **NCBI Entrez Direct tool**. First we install it in our environment with `conda install bioconda::entrez-direct`. Then we make a query and save the output in `csv` format.
+We can search for sequencing data related to this BioProject through the command line using **NCBI Entrez Direct tool**. First we install it in our environment with.
 
-- `esearch` queries the database and returns all accession numbers that match that query
-- `efetch` fetches the data linked to those accession numbers
+```bash
+conda install bioconda::entrez-direct
+```
+
+Then we make a query and save the output in `csv` format.
 
 ```bash
 esearch -db sra -query PRJNA1166928 | efetch -format runinfo > runinfo.csv
 ```
 
+- `esearch` queries the database and returns all accession numbers that match that query
+- `efetch` fetches the data linked to those accession numbers
 - `-db` specifies an NCBI database to search
 - `-query` specifies the search query
 - `|` pipes the output of the previous command as input for this command
@@ -95,23 +107,27 @@ To study how *Wolbachia pipientis* influences **gene expression** (particulary t
 
 ### b) Provide some info about the dataset you will work with and which sequencing technology was used.
 
-![[Pasted image 20250421105830.png]]
+![](files/Pasted image 20250421105830.png)
 
 ---
 
 **Name:** 
+
 - This dataset contains reads from ovarie tissue of infected and uninfected *Drosophiila menogaster* organisms with wild-type genotypes and genotypes with hypomorphed (functional gene with reduced function) *bam* gene.
 - Since this is a [3' RNA-seq](https://en.wikipedia.org/wiki/3%27_mRNA-seq), this means that the 3' untranslated regions of polyadenylated mRNA's were sequenced instead of the whole trancript. 
 
 **Sequencing technology:**
+
 - ILLUMINA (NextSeq 500).
 
 **Run statistics:**
+
 - The data comes from a single sequencing run with the mentioned technology.
 - 4.5 million reads were generated.
 - Total number of nucleotides across all reads is 390.2 million.
 
 **Library:**
+
 - Source material are transcripts.
 - Selection (filtering of RNA) by polyA tail was used.
 - SINGLE layout means our reads were single-ended.
@@ -125,14 +141,20 @@ The kit is not listed, so I cannot answer this question.
 **Stranded libraries** are prepared in a way to contain information about the strand of cDNA from which the transcript originates.
 
 This kind of library:
+
 - allows you to **distinguish between the** **sense** and **antisense** strands of cDNA
 - is useful for 
-	- identifying **antisense trancription**
+	- identifying **antisense transcription**
 	- **gene annotation** and **novel gene discovery**
 	- determining the **origin of RNA** molecules in **overlapping regions**
 	- **accurately** quantifying gene expression
+	
+---
 
-> source: https://youtu.be/yp9A5E-Y49Y?si=qzVTqlXUrEowuIKG, https://lcsciences.com/why-is-strand-specific-library-preparation-important/
+source: 
+
+- <https://youtu.be/yp9A5E-Y49Y?si=qzVTqlXUrEowuIKG>
+- <https://lcsciences.com/why-is-strand-specific-library-preparation-important/>
 
 # Downloading data
 
@@ -178,7 +200,7 @@ The quality report is the generated `.html` file. To view the rendered file, you
 
 Alternativelly, you can open a **graphical user interface** of FastQC tool by executing only `fastqc`. This will open a new window where you can open your `.fastq` file and generate and view the report.
 
-![[Pasted image 20250418203153.png]]
+![](files/Pasted image 20250418203153.png)
 
 Click on `File > Open` and select your file. When it's finished, you should see the report. Click on `File > Save report` and save the report in the working directory as `pre-filtertering_fastqc.html`.
 
@@ -188,11 +210,13 @@ FastQC shows a summary of modules that were run on our data. On the left there i
 
 It's important to analyse these results in detail, because these three symbols might not show the whole context.
 
->[!warning]
->mislm da mas pngs od grafov v neki mapci v root, dej jih namesto teh screenshotov
+::: {.callout-warning}
+mislm da mas pngs od grafov v neki mapci v root, dej jih namesto teh screenshotov
+:::
+
 #### Basic Statistics
 
-![[Pasted image 20250421121853.png]]
+![](files/Pasted image 20250421121853.png)
 
 Nothing that hasn't been mentioned before, except the `%GC` number, which tells us the overall **GC (guanosine + citosine) content** across all sequences.
 
@@ -200,13 +224,13 @@ It is the simplest known HI (homology independent) metric used as a genome signi
 
 Based on the table below, it seems GC content in our sequences is valid.
 
-![[Pasted image 20250422113052.png|400]]
-*source: www.researchgate.net/figure/GC-content-of-Human-Mouse-Drosophila-melanogaster-Caenorhabditis-elegans_tbl1_5485258?__cf_chl_tk=CQJZOaB7o7m7DdJQ09Z_pGqtyr92uh63l1kqDyk4nvI-1745314185-1.0.1.1-Js8Lw9JrJD2ALRLlK.cLmPitbjmIqgkt5bpJ_4_iZuc*
+![](files/Pasted image 20250422113052.png)
 
 > It is also worth noting that the manuals says the Basic Statistics module never raises a warning or an error.
+
 #### Per base sequence quality
 
-![[Pasted image 20250421121906.png]]
+![](files/Pasted image 20250421121906.png)
 
 It shows a range of quality values across all bases at each position. **Green area** are good quality calls, **orange area** are calls of reasonable quality and **red area** are calls of poor quality. The quality of calls will degrade as the run progresses, so the drop in quality at the end, as seen above, is not uncommon. 
 
@@ -214,13 +238,13 @@ This plot can alert us to whether there were any problems occuring during sequen
 
 #### Per sequence quality scores
 
-![[Pasted image 20250421121926.png]]
+![](files/Pasted image 20250421121926.png)
 
 This plot shows us the average quality score per read on the x-axis and the number of sequences with that average on the y-axis. Most of our reads have the highest quality scores.
 
 ####  Per base sequence content
 
-![[Pasted image 20250421121941.png]]
+![](files/Pasted image 20250421121941.png)
 
 This module presents **the proportion of each base position for which each of the 4 DNA bases had been called**. For RNA-seq the beginning is usually all over the place, because of adapters added during library preparation, although in our case there isn't a lot of noise in the beginning, but rather at the end, where the `%A` starts growing rapidly.
 
@@ -228,7 +252,7 @@ This module will fail when the percentage difference between AT and GC is greate
 
 #### Per sequence GC content
 
-![[Pasted image 20250421121950.png]]
+![](files/Pasted image 20250421121950.png)
 
 This plot shows the GC distribution across all sequences (red) compared to a theoretical normal distribution (blue). As I mentioned, our organisms GC content is around 40%. A shifted theoretical distribution indicates this bias, but this is not the reason this module fails.
 
@@ -236,19 +260,19 @@ The module will show a failure when our GC distribution doesn't follow the theor
 
 #### Per base N content
 
-![[Pasted image 20250421121959.png]]
+![](files/Pasted image 20250421121959.png)
 
 If a sequencer is unable to make a base call with sufficient confidence then it will substitute an N rather than a conventional base. This plot show that no N's were substituted in our sequences.
 
 #### Sequence Length Distribution
 
-![[Pasted image 20250421122009.png]]
+![](files/Pasted image 20250421122009.png)
 
 This module generates a graph showing the distribution of read sizes. Generally all reads will be the same length (prior to trimming and preprocessing).
 
 #### Sequence Duplication Levels
 
-![[Pasted image 20250421122022.png]]
+![](files/Pasted image 20250421122022.png)
 
 In a diverse library most sequences will occur only once in the final set. A high level of duplication is likely to indicate some kind of enrichment bias (e.g. PCR over amplification).
 
@@ -256,7 +280,7 @@ There are quite a few duplicate sequences in our dataset, but I am not sure how 
 
 #### Overrepresented sequences
 
-![[Pasted image 20250421122035.png]]
+![](files/Pasted image 20250421122035.png)
 
 **Overrepresented sequences** are sequences that are found more frequently than statistical models predict it should occur by chance in a random distribution of sequences of that length.
 
@@ -268,7 +292,7 @@ There are not hits detected, which could mean that they are less common primers 
 
 #### Adapter content
 
-![[Pasted image 20250421122129.png]]
+![](files/Pasted image 20250421122129.png)
 
 This module shows the mean percentage of adapter content or polyA or polyG tail. There was a very small percentage of adapters detected in our reads, which is almost neglegible but will be dealt with in the next section.
 
@@ -286,7 +310,7 @@ FastQ files are text files that combine **FASTA formatted sequences** with their
 
 Since FastQ files bundle quality scores of sequences, we can take a quick look at the first stored sequence with `head -n 4 SRR30833097.fastq`. This will output
 
-```
+```{code-block-background: true}
 @SRR30833097.1 NB500947:1144:HM5GMBGXH:1:11101:4455:1091 length=86
 GGCGGTCGAGTGCCTCACAGTGTATCAAGGGTNGGCCACGNTCCTNACTAATNGNGGCTNNTTGCGCCATCGTCTCANGCAATGTT
 +SRR30833097.1 NB500947:1144:HM5GMBGXH:1:11101:4455:1091 length=86
@@ -327,9 +351,7 @@ I also measured time needed to process the file to determine which approach is f
 
 ##### Pattern matching
 
-```Python
-# lines.py
-
+```{.python filename="lines.py"}
 import sys
 from time import time
 
@@ -355,7 +377,7 @@ print(f"time: {final_time}")
 
 The program outputs:
 
-```
+```{code-block-background: true}
 $ python3 lines.py SRR30833097.fastq 
 Processing file...
 number of sequences in file: 4537365
@@ -366,8 +388,7 @@ time: 6.220864295959473 sec
 
 These are the only altered lines.
 
-```Python
-# nlines.py
+```{.python filename="nlines.py"}
 # snip
 
 with open(fname, "r") as file:
@@ -377,7 +398,7 @@ with open(fname, "r") as file:
 # snip
 ```
 
-```
+```{code-block-background: true}
 $ python3 nlines.py SRR30833097.fastq 
 Processing file...
 number of sequences in file: 4537365.0
@@ -393,8 +414,7 @@ Since Python is slow by its nature, maybe a simple C program will do this faster
 
 ##### Pattern matching
 
-```c
-// clines.c
+```{.c filename="clines.c"}
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -446,7 +466,7 @@ int main(int argc, char *argv[]) {
 
 When we compile and run this program, we get this:
 
-```
+```{code-block-background: true}
 $ gcc clines.c -o clines.out && ./clines SRR30833097.fastq 
 Processing file...
 sequences in file: 4537365
@@ -459,8 +479,7 @@ Now this is a great improvement from the Python scripts. Will the second approac
 
 These are the only altered lines.
 
-```c
-  // nclines.c
+```{.c filename="nclines.c"}
   // snip
   if (argc != 2) {
     printf("Usage: ./nclines.out <fastq-file>");
@@ -474,7 +493,7 @@ These are the only altered lines.
   // snip
 ```
 
-```
+```{code-block-background: true}
 $ gcc nclines.c -o nclines.out && ./nclines SRR30833097.fastq 
 Processing file...
 sequences in file: 4537365
@@ -565,7 +584,7 @@ So about 92k reads were removed and our quality increased only by almost 1%. Let
 
 Runing fastqc on newly generated fastq file as before:
 
-![[Pasted image 20250426172831.png]]
+![](files/Pasted image 20250426172831.png)
 
 We can see that the polyA tail situation hasn't improved. This is why we need to add some flags to our `fastp` program, so it can do a better job at filtering low quality reads.
 
@@ -604,7 +623,7 @@ bases trimmed in polyX tail: 12111332
 
 Quality improved for almost 0.1%, which is not great progress. Many reads were detected with polX tail at the 3' end.
 
-![[Pasted image 20250426174128.png]]
+![](files/Pasted image 20250426174128.png)
 
 A little better, but not good enough.
 
@@ -646,7 +665,7 @@ bases trimmed in polyX tail: 11402404
 
 There were less reads with polyX tails detected, probably because the polyG trimming was done first.
 
-![[Pasted image 20250426174210.png]]
+![](files/Pasted image 20250426174210.png)
 
 ## Adjust minimum polyX tail length
 
@@ -690,7 +709,7 @@ The quality increased by about 0.1% which is something, but not much.
 
 The FastQC report shows that truly less reads were trimmed and consequently the polyA tail percentage is higher. The following picture shows two overlapping images.
 
-![[Pasted image 20250426181750.png]]
+![](files/Pasted image 20250426181750.png)
 
 ---
 
@@ -763,7 +782,7 @@ The quality increased more than 1%, which means we are on the right track. A lot
 
 What does FastQC show us?
 
-![[Pasted image 20250426183302.png]]
+![](files/Pasted image 20250426183302.png)
 
 The line dropped again, but it's still just a little bit over the modules threshold for failure, which is 10%. We can play around with the parameters to get a better quality.
 
@@ -843,12 +862,15 @@ The quality dropped again, since less tails were trimmed. Since we are scanning 
 
 Let's keep window size at 10 and increase the mean quality threshold from default 20 to max 36. This could potentially eliminate too many bases, but it would trim all reads with low quality tails.
 
->[!warning]
->Although it says that max is 36 on the github page, the command will fail with this value and print:
->```bash
-> ERROR: the mean quality requirement for cutting by quality (--cut_mean_quality) should be 1 ~ 30, suggest 15 ~ 20.
->```
->So we will set it to 30.
+::: {.callout-warning}
+Although it says that max is 36 on the github page, the command will fail with this value and print:
+
+```
+ERROR: the mean quality requirement for cutting by quality
+(--cut_mean_quality) should be 1 ~ 30, suggest 15 ~ 20.
+```
+So we will set it to 30.
+:::
 
 ```bash
 fastp 
@@ -887,11 +909,14 @@ Now this is real progress. The quality increased by about 2%. It trimmed about 1
 
 The small adapter content present also went down, which is great.
 
-![[Pasted image 20250426191615.png]]
+![](files/Pasted image 20250426191615.png)
 
->[!Note] *per base sequence content* and *per sequence GC content*
->These two modules still fail, but if we think logically, the first one can be dependent on the other. 
->Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn't critical in my opinion.
+::: {.callout-note title="per base sequence content and per sequence GC content"} 
+
+These two modules still fail, but if we think logically, the first one can be dependent on the other. 
+Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn't critical in my opinion.
+
+:::
 
 ## Final command
 

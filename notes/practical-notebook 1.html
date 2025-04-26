@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jan Panjan">
+
+<title>Practical notebook</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="practical-notebook 1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="practical-notebook 1_files/libs/quarto-html/quarto.js"></script>
+<script src="practical-notebook 1_files/libs/quarto-html/popper.min.js"></script>
+<script src="practical-notebook 1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="practical-notebook 1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="practical-notebook 1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="practical-notebook 1_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="practical-notebook 1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="practical-notebook 1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="practical-notebook 1_files/libs/bootstrap/bootstrap-bb847f810ecbd142cc7c2852db13806f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Practical notebook</h1>
+<p class="subtitle lead">Analysis od nucleotide sequences</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jan Panjan </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox">document tools’ versions</label></li>
+<li><label><input type="checkbox">multiqc report od vseh</label></li>
+</ul>
+</div>
+</div>
+<hr>
+<section id="general-instructions" class="level1">
+<h1>General instructions</h1>
+<p>Instructions for filling in the worksheets:</p>
+<ul>
+<li><p>Worksheets include questions (some are for refreshing the knowledge, whereas some will probably require a little bit of literature review) and practical work, where you carefully insert all codes and as much as possible comments.</p></li>
+<li><p>Each step of the bioinformatics analysis should be well documented and explained why it was performed and why each parameter/option of the command was used.</p></li>
+<li><p>Bioinformatics tools which you will use have several options. I encourage you to explore why they are used for. Make sure that you add this to the report as well.</p></li>
+<li><p>Comments regarding the worksheets, how can be improved, what should be added, etc. are welcome.</p></li>
+</ul>
+<hr>
+</section>
+<section id="setting-up-your-environment" class="level1">
+<h1>Setting up your environment</h1>
+<p><strong>Virtual environments</strong> are great, because they let you have separate environments for separate proejcts. This is advantageous, since one project could rely on a certain package version 3, while some other may require version 4.</p>
+<section id="conda" class="level2">
+<h2 class="anchored" data-anchor-id="conda">Conda</h2>
+<p>An advantage that <strong>Conda</strong> provides is not only for managing Python libraries, but also command line tools. This can make the tool’s instalation process uniform and more generalized for users that don’t work on the same systems.</p>
+<p>I recommend installing Conda with these instructions: <a href="docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">docs.conda.io/projects/conda/en/latest/user-guide/install/index.html</a>. Essentially the difference between Miniconda and Anaconda is that with Miniconda you have to install many tools manually. Install whichever you like.</p>
+<section id="bioconda" class="level3">
+<h3 class="anchored" data-anchor-id="bioconda">Bioconda</h3>
+<p>To use certain bioinformatics tools, we need to use the <strong>Bioconda</strong> channel. No installation is needed, only this 3 commands that alter your <code>.condarc</code> configuration:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> config <span class="at">--add</span> channels bioconda</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> config <span class="at">--add</span> channels conda-forge</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> config <span class="at">--set</span> channel_priority strict</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="virtual-environment" class="level2">
+<h2 class="anchored" data-anchor-id="virtual-environment">Virtual environment</h2>
+<p>Finally, we can create an environment for this project using:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--name</span> ans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Answer the prompt with yes to create an environment and then <strong>activate</strong> the environment with <code>conda activate ans</code>. Activation of the environment is local to a terminal session, so you will have to use this command again if you open another terminal instance. To deactivate it simply run <code>conda deactivate</code>.</p>
+</section>
+</section>
+<section id="finding-our-data" class="level1">
+<h1>Finding our data</h1>
+<p>During this course we were tasked to work on the RNA-seq dataset linked to the article titled <em>“Wolbachia pipientis modulates germline stem cells and gene expression associated with ubiquitination and histone lysine trimethylation to rescue fertility defects in Drosophila”</em>.</p>
+<section id="bioproject-accession-number" class="level2">
+<h2 class="anchored" data-anchor-id="bioproject-accession-number">BioProject accession number</h2>
+<p>First thing to do is to find this article on <strong>NCBI</strong> or <strong>PubMed</strong>. This can be done with a quick Google search: <a href="https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052" class="uri">https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052</a>.</p>
+<p>In the article, find the section <em>Data availability</em>. There will be an accession number for a <strong>BioProject</strong> (this is a collection of biological data related to a large-scale research effort).</p>
+</section>
+<section id="sra-accession-number" class="level2">
+<h2 class="anchored" data-anchor-id="sra-accession-number">SRA accession number</h2>
+<p>We can search for sequencing data related to this BioProject through the command line using <strong>NCBI Entrez Direct tool</strong>. First we install it in our environment with.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install bioconda::entrez-direct</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then we make a query and save the output in <code>csv</code> format.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">esearch</span> <span class="at">-db</span> sra <span class="at">-query</span> PRJNA1166928 <span class="kw">|</span> <span class="ex">efetch</span> <span class="at">-format</span> runinfo <span class="op">&gt;</span> runinfo.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>esearch</code> queries the database and returns all accession numbers that match that query</li>
+<li><code>efetch</code> fetches the data linked to those accession numbers</li>
+<li><code>-db</code> specifies an NCBI database to search</li>
+<li><code>-query</code> specifies the search query</li>
+<li><code>|</code> pipes the output of the previous command as input for this command</li>
+<li><code>-format</code> specifies the output format</li>
+</ul>
+<p>If we take a quick look at this file, it has many different columns, while we are only interested in the SRA (sequence read archive) accession numbers. We can extract the first column with <code>cut</code> on the output of <code>tail</code> that will skip the first line (the header):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> +2 runinfo.csv <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-d</span> <span class="st">','</span> <span class="at">-f1</span> <span class="op">&gt;</span> SraAccList.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>-n +2</code> tells <code>tail</code> to start displaying from the second line</li>
+<li>The <code>-d</code> flag is used to specify a delimiter and the <code>-f1</code> tells <code>cut</code> to extract the first field.</li>
+</ul>
+<p>Each of us students had to choose one accession number. I choose <strong>SRR30833097</strong>. Save this into a file with <code>echo "SRR30833097" &gt; OurAcc.txt</code>.</p>
+</section>
+<section id="questions-regarding-research-and-sequencing-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="questions-regarding-research-and-sequencing-dataset">Questions regarding research and sequencing dataset</h2>
+<section id="a-what-is-the-aim-of-the-study-described-in-the-scientific-article" class="level3">
+<h3 class="anchored" data-anchor-id="a-what-is-the-aim-of-the-study-described-in-the-scientific-article">a) What is the aim of the study, described in the scientific article?</h3>
+<p>To study how <em>Wolbachia pipientis</em> influences <strong>gene expression</strong> (particulary the gene expression of genes associated with ubiquitin and histone lysine trimethylation) when rescuing the fertility defect on female hypomorph <strong>bam gene</strong> (<em>bag of marbles</em> - a gene involved in germ cell differentiation).</p>
+</section>
+<section id="b-provide-some-info-about-the-dataset-you-will-work-with-and-which-sequencing-technology-was-used." class="level3">
+<h3 class="anchored" data-anchor-id="b-provide-some-info-about-the-dataset-you-will-work-with-and-which-sequencing-technology-was-used.">b) Provide some info about the dataset you will work with and which sequencing technology was used.</h3>
+<p><img src="files/Pasted%20image%2020250421105830.png" class="img-fluid"></p>
+<hr>
+<p><strong>Name:</strong></p>
+<ul>
+<li>This dataset contains reads from ovarie tissue of infected and uninfected <em>Drosophiila menogaster</em> organisms with wild-type genotypes and genotypes with hypomorphed (functional gene with reduced function) <em>bam</em> gene.</li>
+<li>Since this is a <a href="https://en.wikipedia.org/wiki/3%27_mRNA-seq">3’ RNA-seq</a>, this means that the 3’ untranslated regions of polyadenylated mRNA’s were sequenced instead of the whole trancript.</li>
+</ul>
+<p><strong>Sequencing technology:</strong></p>
+<ul>
+<li>ILLUMINA (NextSeq 500).</li>
+</ul>
+<p><strong>Run statistics:</strong></p>
+<ul>
+<li>The data comes from a single sequencing run with the mentioned technology.</li>
+<li>4.5 million reads were generated.</li>
+<li>Total number of nucleotides across all reads is 390.2 million.</li>
+</ul>
+<p><strong>Library:</strong></p>
+<ul>
+<li>Source material are transcripts.</li>
+<li>Selection (filtering of RNA) by polyA tail was used.</li>
+<li>SINGLE layout means our reads were single-ended.</li>
+</ul>
+</section>
+<section id="c-which-kit-was-used-for-sequencing-library-preparation-does-this-kit-preserve-strand-information-stranded-library-or-not" class="level3">
+<h3 class="anchored" data-anchor-id="c-which-kit-was-used-for-sequencing-library-preparation-does-this-kit-preserve-strand-information-stranded-library-or-not">c) Which kit was used for sequencing library preparation? Does this kit preserve strand information (stranded library) or not?</h3>
+<p>The kit is not listed, so I cannot answer this question.</p>
+</section>
+<section id="d-what-is-the-advantage-of-stranded-mrna-library-preparation-compared-to-non-stranded-library" class="level3">
+<h3 class="anchored" data-anchor-id="d-what-is-the-advantage-of-stranded-mrna-library-preparation-compared-to-non-stranded-library">d) What is the advantage of stranded mRNA library preparation compared to non-stranded library?</h3>
+<p><strong>Stranded libraries</strong> are prepared in a way to contain information about the strand of cDNA from which the transcript originates.</p>
+<p>This kind of library:</p>
+<ul>
+<li>allows you to <strong>distinguish between the</strong> <strong>sense</strong> and <strong>antisense</strong> strands of cDNA</li>
+<li>is useful for
+<ul>
+<li>identifying <strong>antisense transcription</strong></li>
+<li><strong>gene annotation</strong> and <strong>novel gene discovery</strong></li>
+<li>determining the <strong>origin of RNA</strong> molecules in <strong>overlapping regions</strong></li>
+<li><strong>accurately</strong> quantifying gene expression</li>
+</ul></li>
+</ul>
+<hr>
+<p>source:</p>
+<ul>
+<li><a href="https://youtu.be/yp9A5E-Y49Y?si=qzVTqlXUrEowuIKG" class="uri">https://youtu.be/yp9A5E-Y49Y?si=qzVTqlXUrEowuIKG</a></li>
+<li><a href="https://lcsciences.com/why-is-strand-specific-library-preparation-important/" class="uri">https://lcsciences.com/why-is-strand-specific-library-preparation-important/</a></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="downloading-data" class="level1">
+<h1>Downloading data</h1>
+<section id="prefetch" class="level2">
+<h2 class="anchored" data-anchor-id="prefetch">Prefetch</h2>
+<p>Sequencing data is obtained from the SRA database with the SRA Toolkit. It can be installed with <code>conda install -c bioconda sra-tools</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">prefetch</span> <span class="at">--option-file</span> OurAcc.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Prefetch</strong> is used to obtain <em>Runs</em> (sequence files in compressed SRA format). The <code>--output-file</code> flag is used to use a file with a list of accession numbers as input. The command creates a directory named after the given accession number, where the downloaded files reside.</p>
+<p>The prefetched runs can be converted into FastQ format using <code>fasterq-dump</code>, that takes the created directory as input:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fasterq-dump</span> <span class="at">--skip-technical</span> SRR30833097/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>--skip-technical</code> returns only biological reads.</p>
+<p>Since we have only single-end sequences, it should output a single <code>.fastq</code> file in the current directory. You can check that the line count matches 18149460 with:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> SRR30833097.fastq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="generating-a-quality-report" class="level1">
+<h1>Generating a quality report</h1>
+<section id="a-run-fastqc-over-your-dataset.-explain-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="a-run-fastqc-over-your-dataset.-explain-the-results">a) Run FastQC over your dataset. Explain the results</h2>
+<section id="command-line-fastqc" class="level3">
+<h3 class="anchored" data-anchor-id="command-line-fastqc">Command line FastQC</h3>
+<p>To get a <strong>full report</strong> on all sequences in our dataset, we can use <strong>FastQC tool</strong>. Install it with <code>conda install -c bioconda fastqc</code> and run it on the <code>.fastq</code> file.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastqc</span> SRR30833097.fastq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The quality report is the generated <code>.html</code> file. To view the rendered file, you can open it with your browser (e.g.&nbsp;<code>opera *.html</code>).</p>
+</section>
+<section id="gui-fastqc" class="level3">
+<h3 class="anchored" data-anchor-id="gui-fastqc">GUI FastQC</h3>
+<p>Alternativelly, you can open a <strong>graphical user interface</strong> of FastQC tool by executing only <code>fastqc</code>. This will open a new window where you can open your <code>.fastq</code> file and generate and view the report.</p>
+<p><img src="files/Pasted%20image%2020250418203153.png" class="img-fluid"></p>
+<p>Click on <code>File &gt; Open</code> and select your file. When it’s finished, you should see the report. Click on <code>File &gt; Save report</code> and save the report in the working directory as <code>pre-filtertering_fastqc.html</code>.</p>
+</section>
+<section id="explaining-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="explaining-the-results">Explaining the results</h3>
+<p>FastQC shows a summary of modules that were run on our data. On the left there is a <strong>green tick</strong> if the module seems entirely normal, an <strong>orange exclamation mark</strong> if results are slightly abnormal and a <strong>red cross</strong> if they are very unsusual.</p>
+<p>It’s important to analyse these results in detail, because these three symbols might not show the whole context.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>mislm da mas pngs od grafov v neki mapci v root, dej jih namesto teh screenshotov</p>
+</div>
+</div>
+<section id="basic-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="basic-statistics">Basic Statistics</h4>
+<p><img src="files/Pasted%20image%2020250421121853.png" class="img-fluid"></p>
+<p>Nothing that hasn’t been mentioned before, except the <code>%GC</code> number, which tells us the overall <strong>GC (guanosine + citosine) content</strong> across all sequences.</p>
+<p>It is the simplest known HI (homology independent) metric used as a genome signiature. It can be easily calculated from sequence data alone. It displays a huge variation across genomes and is reasonably constant within a given genome</p>
+<p>Based on the table below, it seems GC content in our sequences is valid.</p>
+<p><img src="files/Pasted%20image%2020250422113052.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>It is also worth noting that the manuals says the Basic Statistics module never raises a warning or an error.</p>
+</blockquote>
+</section>
+<section id="per-base-sequence-quality" class="level4">
+<h4 class="anchored" data-anchor-id="per-base-sequence-quality">Per base sequence quality</h4>
+<p><img src="files/Pasted%20image%2020250421121906.png" class="img-fluid"></p>
+<p>It shows a range of quality values across all bases at each position. <strong>Green area</strong> are good quality calls, <strong>orange area</strong> are calls of reasonable quality and <strong>red area</strong> are calls of poor quality. The quality of calls will degrade as the run progresses, so the drop in quality at the end, as seen above, is not uncommon.</p>
+<p>This plot can alert us to whether there were any problems occuring during sequencing. Our mean quality (blue line) is consistently in the green area, which means our per base sequence quality of good.</p>
+</section>
+<section id="per-sequence-quality-scores" class="level4">
+<h4 class="anchored" data-anchor-id="per-sequence-quality-scores">Per sequence quality scores</h4>
+<p><img src="files/Pasted%20image%2020250421121926.png" class="img-fluid"></p>
+<p>This plot shows us the average quality score per read on the x-axis and the number of sequences with that average on the y-axis. Most of our reads have the highest quality scores.</p>
+</section>
+<section id="per-base-sequence-content" class="level4">
+<h4 class="anchored" data-anchor-id="per-base-sequence-content">Per base sequence content</h4>
+<p><img src="files/Pasted%20image%2020250421121941.png" class="img-fluid"></p>
+<p>This module presents <strong>the proportion of each base position for which each of the 4 DNA bases had been called</strong>. For RNA-seq the beginning is usually all over the place, because of adapters added during library preparation, although in our case there isn’t a lot of noise in the beginning, but rather at the end, where the <code>%A</code> starts growing rapidly.</p>
+<p>This module will fail when the percentage difference between AT and GC is greater that 20% in any position.</p>
+</section>
+<section id="per-sequence-gc-content" class="level4">
+<h4 class="anchored" data-anchor-id="per-sequence-gc-content">Per sequence GC content</h4>
+<p><img src="files/Pasted%20image%2020250421121950.png" class="img-fluid"></p>
+<p>This plot shows the GC distribution across all sequences (red) compared to a theoretical normal distribution (blue). As I mentioned, our organisms GC content is around 40%. A shifted theoretical distribution indicates this bias, but this is not the reason this module fails.</p>
+<p>The module will show a failure when our GC distribution doesn’t follow the theoretical one. This could indicate <strong>contamination</strong> with another organism within the library (broad peaks) or presence of <strong>over-expressed sequences</strong> (sharp peaks).</p>
+</section>
+<section id="per-base-n-content" class="level4">
+<h4 class="anchored" data-anchor-id="per-base-n-content">Per base N content</h4>
+<p><img src="files/Pasted%20image%2020250421121959.png" class="img-fluid"></p>
+<p>If a sequencer is unable to make a base call with sufficient confidence then it will substitute an N rather than a conventional base. This plot show that no N’s were substituted in our sequences.</p>
+</section>
+<section id="sequence-length-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="sequence-length-distribution">Sequence Length Distribution</h4>
+<p><img src="files/Pasted%20image%2020250421122009.png" class="img-fluid"></p>
+<p>This module generates a graph showing the distribution of read sizes. Generally all reads will be the same length (prior to trimming and preprocessing).</p>
+</section>
+<section id="sequence-duplication-levels" class="level4">
+<h4 class="anchored" data-anchor-id="sequence-duplication-levels">Sequence Duplication Levels</h4>
+<p><img src="files/Pasted%20image%2020250421122022.png" class="img-fluid"></p>
+<p>In a diverse library most sequences will occur only once in the final set. A high level of duplication is likely to indicate some kind of enrichment bias (e.g.&nbsp;PCR over amplification).</p>
+<p>There are quite a few duplicate sequences in our dataset, but I am not sure how to interpret this.</p>
+</section>
+<section id="overrepresented-sequences" class="level4">
+<h4 class="anchored" data-anchor-id="overrepresented-sequences">Overrepresented sequences</h4>
+<p><img src="files/Pasted%20image%2020250421122035.png" class="img-fluid"></p>
+<p><strong>Overrepresented sequences</strong> are sequences that are found more frequently than statistical models predict it should occur by chance in a random distribution of sequences of that length.</p>
+<p>This model lists all of the sequences which make up more than 0.1 % of the total, but it tracks only the <strong>first 200,000 sequences</strong>, therefore some overrepresented sequences might be missed. Minimum read length is <strong>25bp</strong> and reads longer than <strong>75bp</strong> are <strong>truncated to 50bp</strong>.</p>
+<p>The module looks for matches in a database of common contaminants and reports hits if they’re found (<em>possible source</em> column). If a single sequence is overrepresented, this could mean that it is higly biologically significant or that the library is contaminated. A hit <strong>may</strong> indicate some form of contamination (e.g.&nbsp;adapters).</p>
+<p>There are not hits detected, which could mean that they are less common primers or that some other artifact is present.</p>
+</section>
+<section id="adapter-content" class="level4">
+<h4 class="anchored" data-anchor-id="adapter-content">Adapter content</h4>
+<p><img src="files/Pasted%20image%2020250421122129.png" class="img-fluid"></p>
+<p>This module shows the mean percentage of adapter content or polyA or polyG tail. There was a very small percentage of adapters detected in our reads, which is almost neglegible but will be dealt with in the next section.</p>
+<p>A much higher percent of polyA tails was detected. This is not untypical, since our reads came from 3’ ends of mRNA molecules and the polyadenilation is a known chemical modification of pre-mRNA molecules.</p>
+</section>
+</section>
+</section>
+<section id="b-exchange-fastqc-results-with-your-colleagues-and-run-multiqc-to-get-a-joined-report-for-all-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="b-exchange-fastqc-results-with-your-colleagues-and-run-multiqc-to-get-a-joined-report-for-all-datasets">b) Exchange FastQC results with your colleagues and run MultiQC to get a joined report for all datasets</h2>
+</section>
+</section>
+<section id="checking-quality-of-sequences" class="level1">
+<h1>Checking quality of sequences</h1>
+<section id="questions" class="level2">
+<h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="a-how-is-a-fastq-file-composed" class="level3">
+<h3 class="anchored" data-anchor-id="a-how-is-a-fastq-file-composed">a) How is a fastq file composed?</h3>
+<p>FastQ files are text files that combine <strong>FASTA formatted sequences</strong> with their <strong>quality scores</strong> and is the standard format for storing the output of high-throughput sequencing instruments.</p>
+<p>Since FastQ files bundle quality scores of sequences, we can take a quick look at the first stored sequence with <code>head -n 4 SRR30833097.fastq</code>. This will output</p>
+<pre class="{code-block-background: true}"><code>@SRR30833097.1 NB500947:1144:HM5GMBGXH:1:11101:4455:1091 length=86
+GGCGGTCGAGTGCCTCACAGTGTATCAAGGGTNGGCCACGNTCCTNACTAATNGNGGCTNNTTGCGCCATCGTCTCANGCAATGTT
++SRR30833097.1 NB500947:1144:HM5GMBGXH:1:11101:4455:1091 length=86
+AAAAAEEEEEEEEEEEEEEEEEEEE&lt;E//EEE#EEEEEE&lt;#EEEE#E/AEEE#/#EEEE##EEE/EEAEEEEAE6EE#/EEEAAEA</code></pre>
+<p>Each entry starts with <code>@</code> and is followed by a sequence identifier and some other information about the sequence. The line directly below it shows the raw sequence. The <code>+</code> line again can contain information about the sequence and below are the quality values for each nucleotide.</p>
+</section>
+<section id="b-how-can-i-count-the-number-of-reads-in-a-fastq-file-describe-different-ways-to-perform-that." class="level3">
+<h3 class="anchored" data-anchor-id="b-how-can-i-count-the-number-of-reads-in-a-fastq-file-describe-different-ways-to-perform-that.">b) How can I count the number of reads in a fastq file? Describe different ways to perform that.</h3>
+<section id="bash" class="level4">
+<h4 class="anchored" data-anchor-id="bash">BASH</h4>
+<p>Using <code>grep</code> and <code>wc</code>. Grep is used to search for patterns using regular expression in a file. With <code>'^@'</code> we search for every line that starts (<code>^</code>) with <code>@</code>. It outputs every line that matches our pattern. We pipe this in <code>wc -l</code>, as we used before, to count the number of lines.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-e</span> <span class="st">'^@'</span> SRR30833097.fastq <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="awk" class="level4">
+<h4 class="anchored" data-anchor-id="awk">AWK</h4>
+<p>The AWK language is useful for pattern scanning and text proccessing. It proccesses files line by line just like <code>grep</code>. In this case we don’t look for a certain identifier, but we use the fact that every sequence occupies 4 lines to our advantage.</p>
+<p><code>NR</code> (number of records) is a builtin awk-variable. It records lines processed so far. When reading line by line from file, this is essentially the current line number.</p>
+<p>With <code>NR % 4 == 1</code> we calculate if the current line is the first line of 4. This is true for lines 1, 5, 9… which are lines that contain <code>@</code> and represent one sequence each.</p>
+<p>The filtered lines are returned, which we can again pipe into <code>wc -l</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">'NR % 4 == 1'</span> SRR30833097.fastq <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="python" class="level4">
+<h4 class="anchored" data-anchor-id="python">Python</h4>
+<p>I made two scripts, one that uses pattern matching like the BASH command and one that uses calculating the mod of line numbers. They are a little more verbose than the other two options, but still pretty straightforward.</p>
+<p>I also measured time needed to process the file to determine which approach is faster.</p>
+<section id="pattern-matching" class="level5">
+<h5 class="anchored" data-anchor-id="pattern-matching">Pattern matching</h5>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>lines.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb13" data-filename="lines.py"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> time</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">!=</span> <span class="dv">2</span>:</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"Usage: python3 lines.py &lt;fastq-file&gt;"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>fname <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Processing file..."</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(fname, <span class="st">"r"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> <span class="bu">file</span>:</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> line[<span class="dv">0</span>] <span class="op">==</span> <span class="st">"@"</span>:</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>            n <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> time()</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>final_time <span class="op">=</span> end_time <span class="op">-</span> start_time</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"number of sequences in file: </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"time: </span><span class="sc">{</span>final_time<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The program outputs:</p>
+<pre class="{code-block-background: true}"><code>$ python3 lines.py SRR30833097.fastq 
+Processing file...
+number of sequences in file: 4537365
+time: 6.220864295959473 sec</code></pre>
+</section>
+<section id="line-count-calculation" class="level5">
+<h5 class="anchored" data-anchor-id="line-count-calculation">Line count calculation</h5>
+<p>These are the only altered lines.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>nlines.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb15" data-filename="nlines.py"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># snip</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(fname, <span class="st">"r"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> <span class="bu">file</span>.readlines()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(data) <span class="op">/</span> <span class="dv">4</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># snip</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<pre class="{code-block-background: true}"><code>$ python3 nlines.py SRR30833097.fastq 
+Processing file...
+number of sequences in file: 4537365.0
+time: 4.813834190368652 sec</code></pre>
+<p>The second approach was faster by about 1.4 seconds, which is a difference, but it’s not huge, since we are already using a file with 18 million lines. The first one may be more robust since it doesn’t make assumptions about line content, while the second one <em>assumes</em> we have lines that can be evenly divided by 4.</p>
+</section>
+</section>
+<section id="c-instead-of-python" class="level4">
+<h4 class="anchored" data-anchor-id="c-instead-of-python">C instead of Python?</h4>
+<p>Since Python is slow by its nature, maybe a simple C program will do this faster.</p>
+<section id="pattern-matching-1" class="level5">
+<h5 class="anchored" data-anchor-id="pattern-matching-1">Pattern matching</h5>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>clines.c</strong></pre>
+</div>
+<div class="sourceCode" id="cb17" data-filename="clines.c"><pre class="sourceCode c code-with-copy"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/time.h&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MAX_LINE_LEN </span><span class="dv">100</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>argc <span class="op">!=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">"Usage: ./clines.out &lt;fastq-file&gt;"</span><span class="op">);</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">FILE</span> <span class="op">*</span>file <span class="op">=</span> fopen<span class="op">(</span>argv<span class="op">[</span><span class="dv">1</span><span class="op">],</span> <span class="st">"r"</span><span class="op">);</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>file <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    perror<span class="op">(</span><span class="st">"Error opening file."</span><span class="op">);</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> n <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>               <span class="co">// line counter</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="dt">char</span> line<span class="op">[</span>MAX_LINE_LEN<span class="op">];</span> <span class="co">// line buffer</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">// for measuring time more precisely than time_t</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> timeval start_time<span class="op">;</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> timeval end_time<span class="op">;</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> final_time <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  printf<span class="op">(</span><span class="st">"Processing file...</span><span class="sc">\n</span><span class="st">"</span><span class="op">);</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  gettimeofday<span class="op">(&amp;</span>start_time<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> <span class="op">(</span>fgets<span class="op">(</span>line<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>line<span class="op">),</span> file<span class="op">)</span> <span class="op">!=</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>line<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">==</span> <span class="ch">'@'</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>      n<span class="op">++;</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  gettimeofday<span class="op">(&amp;</span>end_time<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">// first term is difference in seconds</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">// second term is diference in microseconds converted to seconds</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>  final_time <span class="op">=</span> <span class="op">(</span><span class="dt">double</span><span class="op">)(</span>end_time<span class="op">.</span>tv_sec <span class="op">-</span> start_time<span class="op">.</span>tv_sec<span class="op">)</span> <span class="op">+</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>               <span class="op">(</span><span class="dt">double</span><span class="op">)(</span>end_time<span class="op">.</span>tv_usec <span class="op">-</span> start_time<span class="op">.</span>tv_usec<span class="op">)</span> <span class="op">/</span> <span class="fl">1000000.0</span><span class="op">;</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>  printf<span class="op">(</span><span class="st">"sequences in file: </span><span class="sc">%d\n</span><span class="st">"</span><span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  printf<span class="op">(</span><span class="st">"time: </span><span class="sc">%f</span><span class="st"> sec</span><span class="sc">\n</span><span class="st">"</span><span class="op">,</span> final_time<span class="op">);</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>When we compile and run this program, we get this:</p>
+<pre class="{code-block-background: true}"><code>$ gcc clines.c -o clines.out &amp;&amp; ./clines SRR30833097.fastq 
+Processing file...
+sequences in file: 4537365
+time: 1.321521 sec</code></pre>
+<p>Now this is a great improvement from the Python scripts. Will the second approach with calculating the mod of lines be faster?</p>
+</section>
+<section id="line-count-calculation-1" class="level5">
+<h5 class="anchored" data-anchor-id="line-count-calculation-1">Line count calculation</h5>
+<p>These are the only altered lines.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>nclines.c</strong></pre>
+</div>
+<div class="sourceCode" id="cb19" data-filename="nclines.c"><pre class="sourceCode c code-with-copy"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">// snip</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>argc <span class="op">!=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">"Usage: ./nclines.out &lt;fastq-file&gt;"</span><span class="op">);</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// snip</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> <span class="op">(</span>fgets<span class="op">(</span>line<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>line<span class="op">),</span> file<span class="op">)</span> <span class="op">!=</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    n<span class="op">++;</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  n <span class="op">=</span> n <span class="op">/</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// snip</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<pre class="{code-block-background: true}"><code>$ gcc nclines.c -o nclines.out &amp;&amp; ./nclines SRR30833097.fastq 
+Processing file...
+sequences in file: 4537365
+time: 1.296595 sec</code></pre>
+<p>It’s faster by a fraction. Again, not a big difference, but faster nevertheless, since we skip the comparisons for every line and do only one operation more after we read the whole file.</p>
+</section>
+</section>
+</section>
+<section id="c-what-about-the-quality-of-your-reads" class="level3">
+<h3 class="anchored" data-anchor-id="c-what-about-the-quality-of-your-reads">c) What about the quality of your reads?</h3>
+<p>Modules that failed:</p>
+<ul>
+<li>per base sequence content</li>
+<li>per base GC content</li>
+<li>adapter content</li>
+</ul>
+<p>The overall quality can be better, which is what we adress in the next section.</p>
+</section>
+<section id="d-describe-your-fastqc-andor-multiqc-and-interpret-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="d-describe-your-fastqc-andor-multiqc-and-interpret-the-results">d) <a href="https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf">Describe your fastqc and/or multiqc and interpret the results</a></h3>
+<p>My fastqc report was explained above in the [[practical-notebook#Checking quality of sequences|Checking quality of sequences]] section.</p>
+<p>Multiqc report…</p>
+</section>
+</section>
+</section>
+<section id="filtering-and-trimming-based-on-quality-parameters" class="level1">
+<h1>Filtering and trimming based on quality parameters</h1>
+<p>This is the <strong>preprocessing</strong> step, where we try and make the quality of our reads better using <a href="https://github.com/OpenGene/fastp">fastp</a>, an ultra-fast all-in-one FASTQ preprocessor. based on the previously generated FastQC report.</p>
+<p>First install fastp with conda.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install <span class="at">-c</span> bioconda fastp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The program filters our reads and generates a <code>fastq</code> file and a <code>html</code> report. We can try running the tool without any flags and check the quality of processed reads.</p>
+<section id="minimal-trimming" class="level2">
+<h2 class="anchored" data-anchor-id="minimal-trimming">Minimal trimming</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-minimal.fq</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-minimal.html</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span> <span class="co"># save time and memory</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>-i</code> specifies the input fastq file</li>
+<li><code>-o</code> specifies name of the output fastq file</li>
+<li><code>--html</code> specifies name for the output fastp report</li>
+<li><code>--dont_eval_duplication</code> to save time and memory by not evaluating duplication rate of reads</li>
+</ul>
+<p>The program outputs some text in the terminal. If we inspect it, we can inspect quality of reads before and after filtering.</p>
+<pre><code>...
+No adapter detected for read1
+
+Read1 before filtering:
+total reads: 4537365
+total bases: 390213390
+Q20 bases: 359416837(92.1078%)
+Q30 bases: 349585493(89.5883%)
+
+Read1 after filtering:
+total reads: 4445266
+total bases: 382292876
+Q20 bases: 355260023(92.9288%)
+Q30 bases: 345871060(90.4728%)
+
+Filtering result:
+reads passed filter: 4445266
+reads failed due to low quality: 90121
+reads failed due to too many N: 1978
+reads failed due to too short: 0
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+...</code></pre>
+<ul>
+<li>no adapters were detected, which isn’t very good, since FastQC detected some, but it will be dealt with in the next steps</li>
+<li>after filtering quality went up for almost 1%</li>
+<li>around 90k reads had too low quality</li>
+<li>around 2k reads were too long</li>
+</ul>
+<p>So about 92k reads were removed and our quality increased only by almost 1%. Let’s run fastqc again on these filtered reads, to see if they pass.</p>
+<blockquote class="blockquote">
+<p>If you missed the program’s output in the terminal, you can open the generated HTML in the browser.</p>
+</blockquote>
+<p>Runing fastqc on newly generated fastq file as before:</p>
+<p><img src="files/Pasted%20image%2020250426172831.png" class="img-fluid"></p>
+<p>We can see that the polyA tail situation hasn’t improved. This is why we need to add some flags to our <code>fastp</code> program, so it can do a better job at filtering low quality reads.</p>
+</section>
+<section id="trim-polyx-tails" class="level2">
+<h2 class="anchored" data-anchor-id="trim-polyx-tails">Trim polyX tails</h2>
+<p>We can try with <code>--trim_poly_x</code>, which should (according to the documentation) trim the tails of our reads, where <code>x</code> represents any base.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolyx.fq</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolyx.html</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4446923
+total bases: 370914387
+Q20 bases: 344936270(92.9962%)
+Q30 bases: 335932934(90.5689%)
+
+Filtering result:
+reads passed filter: 4446923
+reads failed due to low quality: 86186
+reads failed due to too many N: 1944
+reads failed due to too short: 2312
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 716650
+bases trimmed in polyX tail: 12111332
+...</code></pre>
+<p>Quality improved for almost 0.1%, which is not great progress. Many reads were detected with polX tail at the 3’ end.</p>
+<p><img src="files/Pasted%20image%2020250426174128.png" class="img-fluid"></p>
+<p>A little better, but not good enough.</p>
+</section>
+<section id="trim-polyg-and-polyx-tails" class="level2">
+<h2 class="anchored" data-anchor-id="trim-polyg-and-polyx-tails">Trim polyG and polyX tails</h2>
+<p>PolyX tail trimming is disabled by default, but is similar to polyG tail trimming. PolyG tails can happen with Illumina NextSeq (which is the machine that was used to sequence our reads), since <code>G</code> means no signal in the Illumina two-color systems. If both trimming options are enabled, fastp will first do polyG trimming and then polyX.</p>
+<p>Since we don’t have a great amount (or any, its hard to see) of reads with a polyG tail, I don’t think this will improve the quality greatly, but it doesn’t make it worse, so I think it’s fine to add to our command.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolygx.fq </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolygx.html </span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4443750
+total bases: 370455963
+Q20 bases: 344591801(93.0183%)
+Q30 bases: 335614022(90.5948%)
+
+Filtering result:
+reads passed filter: 4443750
+reads failed due to low quality: 85378
+reads failed due to too many N: 1943
+reads failed due to too short: 6294
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 669709
+bases trimmed in polyX tail: 11402404
+...</code></pre>
+<p>There were less reads with polyX tails detected, probably because the polyG trimming was done first.</p>
+<p><img src="files/Pasted%20image%2020250426174210.png" class="img-fluid"></p>
+</section>
+<section id="adjust-minimum-polyx-tail-length" class="level2">
+<h2 class="anchored" data-anchor-id="adjust-minimum-polyx-tail-length">Adjust minimum polyX tail length</h2>
+<p>We still have to add some options to our command. We can try adjusting minimum polyX tail length used for detecting. Default is 10. We can try with 5.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolygx5.fq </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--poly_x_min_len</span> 5 </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolygx5.html </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4445653
+total bases: 370983902
+Q20 bases: 345103461(93.0238%)
+Q30 bases: 336143486(90.6086%)
+
+Filtering result:
+reads passed filter: 4445653
+reads failed due to low quality: 84287
+reads failed due to too many N: 1948
+reads failed due to too short: 5477
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 897389
+bases trimmed in polyX tail: 10973224
+...</code></pre>
+<p>The quality increased by about 0.1% which is something, but not much.</p>
+<ul>
+<li>Less reads failed due to being too short.</li>
+<li>A lot more reads were detected with polyX tail, which seems logical since we lowered the min tail size, but less were trimmed, which seems paradoxical.</li>
+</ul>
+<p>The FastQC report shows that truly less reads were trimmed and consequently the polyA tail percentage is higher. The following picture shows two overlapping images.</p>
+<p><img src="files/Pasted%20image%2020250426181750.png" class="img-fluid"></p>
+<hr>
+<p>We can also try to make the minimum length bigger, but I doubt it will benefit the quality. Let’s make it 15 and check the results.</p>
+<pre><code>...
+Read1 after filtering:
+total reads: 4442425
+total bases: 373018357
+Q20 bases: 346884901(92.9941%)
+Q30 bases: 337799434(90.5584%)
+
+Filtering result:
+reads passed filter: 4442425
+reads failed due to low quality: 86689
+reads failed due to too many N: 1957
+reads failed due to too short: 6294
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 401716
+bases trimmed in polyX tail: 8684854
+...</code></pre>
+<p>As expected, even less reads were trimmed and the quality didn’t improve.</p>
+</section>
+<section id="use-a-sliding-window" class="level2">
+<h2 class="anchored" data-anchor-id="use-a-sliding-window">Use a sliding window</h2>
+<p>We have to look for alternative options for tail trimming. We can use the <code>--cut_tail</code> flag. This will create a sliding window from 3’ to 5’ end and drop bases in the window, if their mean quality drops below some threshold, otherwise it will stop trimming.</p>
+<p>The window size is set using <code>--cut_window_size</code> and is 4 by default. The threshold is set using <code>--cut_tail_mean_quality</code> and is 20 by default, must be between 1 and 36.</p>
+<p>Let’s see what it does without changing these parameters.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolygxwindow.fq </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_tail</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolygxwindow.html </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4458454
+total bases: 359655463
+Q20 bases: 338369588(94.0816%)
+Q30 bases: 329735098(91.6808%)
+
+Filtering result:
+reads passed filter: 4458454
+reads failed due to low quality: 62919
+reads failed due to too many N: 1833
+reads failed due to too short: 14159
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 969006
+bases trimmed in polyX tail: 17650157
+...</code></pre>
+<p>The quality increased more than 1%, which means we are on the right track. A lot more reads were trimmed, but less failed due to low quality. This could mean that it first cuts low quality bases in the window.</p>
+<blockquote class="blockquote">
+<p>The documentation has a “features” section where each feature is numbered. This option is before polyG and X tail trimming, which could mean that it does this first.</p>
+</blockquote>
+<p>What does FastQC show us?</p>
+<p><img src="files/Pasted%20image%2020250426183302.png" class="img-fluid"></p>
+<p>The line dropped again, but it’s still just a little bit over the modules threshold for failure, which is 10%. We can play around with the parameters to get a better quality.</p>
+<hr>
+<p>First, let’s try to make the window a bigger size. It says that it stops if the mean quality is more than the threshold, which could in theory mean that it stops immeadiately on the first 4 bases. Let’s set the window size to 10 with <code>--cut_window_size 10</code>.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolygxwindow20.fq </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_tail</span> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_window_size</span> 10 </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolygxwindow20.html </span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4463315
+total bases: 358814939
+Q20 bases: 338128014(94.2347%)
+Q30 bases: 329597651(91.8573%)
+
+Filtering result:
+reads passed filter: 4463315
+reads failed due to low quality: 52540
+reads failed due to too many N: 1749
+reads failed due to too short: 19761
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 981280
+bases trimmed in polyX tail: 17829600
+...</code></pre>
+<p>The quality increased again, but not by much, even though a lot of reads failed due to low quality. Our reads are not very long, so we shouldn’t increase this too much, but let’s try with size 20.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolygxwindow20.fq </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_tail</span> </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_window_size</span> 20 </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolygxwindow20.html </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4469047
+total bases: 362654545
+Q20 bases: 340736791(93.9563%)
+Q30 bases: 332102803(91.5755%)
+
+Filtering result:
+reads passed filter: 4469047
+reads failed due to low quality: 41519
+reads failed due to too many N: 1675
+reads failed due to too short: 25124
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 877220
+bases trimmed in polyX tail: 15206635
+...</code></pre>
+<p>The quality dropped again, since less tails were trimmed. Since we are scanning a bigger window, good quality bases can be included in the mean quality calculation and consequently low quality tails are saved from trimming.</p>
+</section>
+<section id="increase-the-threshold-in-the-sliding-window" class="level2">
+<h2 class="anchored" data-anchor-id="increase-the-threshold-in-the-sliding-window">Increase the threshold in the sliding window</h2>
+<p>Let’s keep window size at 10 and increase the mean quality threshold from default 20 to max 36. This could potentially eliminate too many bases, but it would trim all reads with low quality tails.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Although it says that max is 36 on the github page, the command will fail with this value and print:</p>
+<pre><code>ERROR: the mean quality requirement for cutting by quality
+(--cut_mean_quality) should be 1 ~ 30, suggest 15 ~ 20.</code></pre>
+<p>So we will set it to 30.</p>
+</div>
+</div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out-trimpolygxwindow10meanquality30.fq </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_tail</span> </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_window_size</span> 10 </span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_mean_quality</span> 30 </span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report-trimpolygxwindow10meanquality30.html </span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>...
+Read1 after filtering:
+total reads: 4473488
+total bases: 335974371
+Q20 bases: 322232306(95.9098%)
+Q30 bases: 315263902(93.8357%)
+
+Filtering result:
+reads passed filter: 4473488
+reads failed due to low quality: 13029
+reads failed due to too many N: 1065
+reads failed due to too short: 49783
+reads with adapter trimmed: 0
+bases trimmed due to adapters: 0
+reads with polyX in 3' end: 1345574
+bases trimmed in polyX tail: 19454923
+...</code></pre>
+<p>Now this is real progress. The quality increased by about 2%. It trimmed about 1.5M more reads. A lot more reads failed due to being too short, which I don’t know how to interpret.</p>
+<p>The small adapter content present also went down, which is great.</p>
+<p><img src="files/Pasted%20image%2020250426191615.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled" title="per base sequence content and per sequence GC content">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+per base sequence content and per sequence GC content
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These two modules still fail, but if we think logically, the first one can be dependent on the other. Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn’t critical in my opinion.</p>
+</div>
+</div>
+</section>
+<section id="final-command" class="level2">
+<h2 class="anchored" data-anchor-id="final-command">Final command</h2>
+<p>Now we can remove all generated reports and filtered copies that we won0t need anymore. You’re free to keep them, but I think our working directory will be more organized if we keep only one copy.</p>
+<p>Remove all files whose names are matched with the pattern <code>fastp*</code></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> fastp<span class="pp">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The final command used to filter our fastq data is</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fastp</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-i</span> SRR30833097.fastq </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-o</span> fastp-out.fq </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_g</span> </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="ex">--trim_poly_x</span> </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_tail</span> </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_window_size</span> 10 </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="ex">--cut_mean_quality</span> 30 </span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--html</span> fastp-report.html </span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="ex">--dont_eval_duplication</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="downloading-the-reference-genome-and-an-annotation-file" class="level1">
+<h1>Downloading the reference genome and an annotation file</h1>
+</section>
+<section id="mapping-rna-seq-reads-on-the-genome" class="level1">
+<h1>Mapping RNA-seq reads on the genome</h1>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
