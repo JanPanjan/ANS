@@ -920,4 +920,12 @@ fastp
 
 # Downloading the reference genome and an annotation file
 
-# Mapping RNA-seq reads on the genome
+[[downloading reference genomes and annotation files]]
+
+# Alignment using HISAT2
+
+[[alignement using hisat2]]
+
+# Quantifying the expression of transcripts using RNA- seq data with Salmon
+
+[[quantifying the expression of transcripts using RNA-seq data with salmon]]

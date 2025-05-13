@@ -1,0 +1,4 @@
+- [[Preprocessing]]
+- [[downloading reference genomes and annotation files]]
+- [[alignement using hisat2]]
+- [[quantifying the expression of transcripts using RNA-seq data with salmon]]

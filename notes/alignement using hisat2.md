@@ -21,9 +21,10 @@ $ HISAT_INDEXES='full-path-to-where-you-ran-the-previous-directory'
 # for me, this is /home/XXX/YYY/ZZZ/WORKING-DIRECTORY/ref_genome/data/GCF_000001215.4/
 ```
 
->[!bug] This did not work. I think the variable has to be in the `.bashrc`!
+>[!bug] Environmental variables
+>This did not work. I think the variable has to be in the `.bashrc` (or `.zshrc`)!
 
-After that we can do sequence alignement with in the same directory:
+After that we can do sequence alignment within the same directory:
 
 ```bash
 $ hisat2 -x genome -U ../../../fastp-out.fq -S HisatAlignment.sam
