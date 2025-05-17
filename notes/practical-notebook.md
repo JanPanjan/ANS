@@ -920,7 +920,115 @@ fastp
 
 # Downloading the reference genome and an annotation file
 
-[[downloading reference genomes and annotation files]]
+The reference genome and its annotation can be downloaded using NCBI command line tools. Install them with
+
+```bash
+conda install conda-forge::ncbi-datasets-cli
+```
+
+To find its accession number, got to [NCBI](https://www.ncbi.nlm.nih.gov/) and search *drosophila melanogaster*. Click on the genome section:
+
+![[Pasted image 20250517181538.png|400]]
+
+Copy and echo the RefSeq/GenBank accession number into a file:
+
+```bash
+echo "GCF_000001215.4" > RefGenAcc.txt
+```
+
+To download the reference genome execute the following command:
+
+```bash
+datasets download genome \
+> accession $(cat RefGenAcc.txt) \
+> --include genome,rna,protein,cds,gff3,gtf \
+> --filename genome.zip
+```
+
+- `genome` : since we want to download a genome
+- `accession` : is clear
+- `--include` : to specify what data files to include in the download
+- `--filename` : desired name of the zip file
+
+Unzip the downloaded file, rename it to something else and remove the zip:
+
+```bash
+unzip genome.zip # unzips into "ncbi_dataset/" directory 
+mv ncbi_dataset ref_genome
+rm genome.zip
+```
+
+## Questions
+
+### a) Describe the GTF
+
+GTF is short for Gene Transfer Format. It's a tab-separated format. It's based on the general feature format (GFF) but contains additional gene information. It holds information about gene structure. Version 2 of GFF is identical to GTF.
+
+There are 9 attributes with each row being a feature. Empty attributes should be donoted with a dot.
+
+| column    | explained                                                                                                                                           |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| seqname   | name of the chromosome/scaffold. Can be given with a name or an ID (acc. number) and should match sequence names in the corresponding sequence file |
+| source    | name of the program that generated this feature or the data source (database or project name).                                                      |
+| feature   | name of the feature (e.g. gene, transcript, exon...).                                                                                               |
+| start     | start position of the feature (base pair).                                                                                                          |
+| end       | end position of the feature (base pair).                                                                                                            |
+| score     | floating point value (no scores in our gtf).                                                                                                        |
+| strand    | `+` defines a forward and `-` a reverse strand.                                                                                                     |
+| frame     | one of 0, 1 or 2. Indicates the first base of the feature is the first base of a codon, 1 that the second base is the first base of a codon...      |
+| attribute | a semicolon-separated list of tag-value pairs giving additional information about a feature.                                                        |
+
+Example from our GTF:
+
+| seqname     | source | feature    | start  | end    | score | strand | frame | attribute                                                  |
+| ----------- | ------ | ---------- | ------ | ------ | ----- | ------ | ----- | ---------------------------------------------------------- |
+| NC_004354.4 | RefSeq | gene       | 122493 | 122706 | .     | +      | .     | gene_id "Dmel_CR40469"; transcript_id ""; cyt_map "1A1-... |
+| NC_004354.4 | RefSeq | transcript | 122493 | 122706 | .     | +      | .     | gene_id "Dmel_CR40469"; transcript_id "NR_003723.2"; db... |
+| NC_004354.4 | RefSeq | exon       | 122493 | 122706 | .     | +      | .     | gene_id "Dmel_CR40469"; transcript_id "NR_003723.2"; db... |
+
+### b) Examine GTF files. Which information can be found in these files?
+
+In our GTF file everything except the score and frame could be found.
+
+### c) How many genes are present?
+
+We can use grep to skip lines with `#` (comments) and then use AWK to check if third column matches "gene":
+
+```bash
+cat genomic.gtf | grep -v "#" | awk '$3=="gene"' | wc -l
+```
+
+`-v` of grep selects non-matching lines and `$3` extracts the third column.
+
+### d) Provide me the commands and results for counting the number of sequences in the various fasta files (DNA, RNA, protein).
+
+Commands and programs are found in the section [[practical-notebook#b) How can I count the number of reads in a fastq file? Describe different ways to perform that.]].
+
+### e) Describe differences between different genomic fasta files.
+
+Protein fasta cointains protein sequences (amino acid residues).
+
+```
+$ head -n 2 protein.faa
+>NP_001007096.1 uncharacterized protein Dmel_CG42637, isoform C [Drosophila melanogaster]
+MTRWPFNLLLLLSVAVRDCSNHRTVLTVGYLTALTGDLKTRQGLAISGALTMALDEVNKDPNLLPNVYLDLRWNDTKGDT
+```
+
+RNA fasta contains transcripts (mRNA).
+
+```
+$ head -n 2 rna.fna
+>NM_001007095.3 Drosophila melanogaster uncharacterized protein, transcript variant C (CG42637), mRNA
+TCACATATTCAAAATCGGGTAGGTAGTCGCGACGGAAAACGGGAAACGCGGACGAATCGCGGAGCCAGAGAAGCGGTAAA
+```
+
+CDS contains nucleotide coding sequences (exons).
+
+```
+$ head -n 4 cds_from_genomic.fna
+>lcl|NC_004354.4_cds_NP_001096854.1_1 [gene=CG17636] [locus_tag=Dmel_CG17636] [db_xref=FLYBASE:FBpp0111834,GeneID:5740847] [protein=uncharacterized protein, isoform A] [protein_id=NP_001096854.1] [location=complement(join(124464..125409,125495..126259,126626..126630))] [gbkey=CDS]
+ATGTCGTGCTGCAAGAAGTACGCCGTCTGCTGGATTATCCTGGTGGTGACCGCATTGGGTGTGACCTTGGGTCTGGTTTT
+```
 
 # Alignment using HISAT2
 
