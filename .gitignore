@@ -14,3 +14,6 @@
 *.gff
 *.gtf
 *.ht2
+
+# everything from ref_genome...
+*/ref_genome/*

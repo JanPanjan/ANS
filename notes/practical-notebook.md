@@ -9,18 +9,18 @@
 Instructions for filling in the worksheets:
 
 - Worksheets include questions (some are for refreshing the knowledge, whereas some will probably require a little bit of literature review) and practical work, where you carefully insert all codes and as much as possible comments.
-    
+
 - Each step of the bioinformatics analysis should be well documented and explained why it was performed and why each parameter/option of the command was used.
-    
+
 - Bioinformatics tools which you will use have several options. I encourage you to explore why they are used for. Make sure that you add this to the report as well.
-    
+
 - Comments regarding the worksheets, how can be improved, what should be added, etc. are welcome.
 
 ---
 
 # Setting up your environment
 
-**Virtual environments** are great, because they let you have separate environments for separate proejcts. This is advantageous, since one project could rely on a certain package version 3, while some other may require version 4.
+**Virtual environments** are great, because they let you have separate environments for separate projects. This is advantageous, since one project could rely on a certain package version 3, while some other may require version 4.
 
 ## Conda
 
@@ -56,7 +56,7 @@ During this course we were tasked to work on the RNA-seq dataset linked to the a
 
 ## BioProject accession number
 
-First thing to do is to find this article on **NCBI** or **PubMed**. This can be done with a quick Google search: https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052. 
+First thing to do is to find this article on **NCBI** or **PubMed**. This can be done with a quick Google search: https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052.
 
 In the article, find the section *Data availability*. There will be an accession number for a **BioProject** (a BioProject is a collection of biological data related to a large-scale research effort).
 
@@ -82,7 +82,7 @@ If we take a quick look at this file, it has many different columns, while we ar
 tail -n +2 runinfo.csv | cut -d ',' -f1 > SraAccList.txt
 ```
 
-- `-n +2` tells `tail` to start displaying from the second line 
+- `-n +2` tells `tail` to start displaying from the second line
 - The `-d` flag is used to specify a delimiter and the `-f1` tells `cut` to extract the first field.
 
 Each of us students had to choose one accession number. I choose **SRR30833097**.  Save this into a file with `echo "SRR30833097" > OurAcc.txt`.
@@ -99,9 +99,9 @@ To study how *Wolbachia pipientis* influences **gene expression** (particulary t
 
 ---
 
-**Name:** 
+**Name:**
 - This dataset contains reads from ovarie tissue of infected and uninfected *Drosophiila menogaster* organisms with wild-type genotypes and genotypes with hypomorphed (functional gene with reduced function) *bam* gene.
-- Since this is a [3' RNA-seq](https://en.wikipedia.org/wiki/3%27_mRNA-seq), this means that the 3' untranslated regions of polyadenylated mRNA's were sequenced instead of the whole trancript. 
+- Since this is a [3' RNA-seq](https://en.wikipedia.org/wiki/3%27_mRNA-seq), this means that the 3' untranslated regions of polyadenylated mRNA's were sequenced instead of the whole trancript.
 
 **Sequencing technology:**
 - ILLUMINA (NextSeq 500).
@@ -126,7 +126,7 @@ The kit is not listed, so I cannot answer this question.
 
 This kind of library:
 - allows you to **distinguish between the** **sense** and **antisense** strands of cDNA
-- is useful for 
+- is useful for
 	- identifying **antisense trancription**
 	- **gene annotation** and **novel gene discovery**
 	- determining the **origin of RNA** molecules in **overlapping regions**
@@ -138,7 +138,7 @@ This kind of library:
 
 ## Prefetch
 
-Sequencing data is obtained from the SRA database with the SRA Toolkit. It can be installed with `conda install -c bioconda sra-tools`. 
+Sequencing data is obtained from the SRA database with the SRA Toolkit. It can be installed with `conda install -c bioconda sra-tools`.
 
 ```bash
 prefetch --option-file OurAcc.txt
@@ -166,13 +166,13 @@ wc -l SRR30833097.fastq
 
 ### Command line FastQC
 
-To get a **full report** on all sequences in our dataset, we can use **FastQC tool**. Install it with `conda install -c bioconda fastqc` and run it on the `.fastq` file. 
+To get a **full report** on all sequences in our dataset, we can use **FastQC tool**. Install it with `conda install -c bioconda fastqc` and run it on the `.fastq` file.
 
 ```bash
 fastqc SRR30833097.fastq
 ```
 
-The quality report is the generated `.html` file. To view the rendered file, you can open it with your browser (e.g. `opera *.html`). 
+The quality report is the generated `.html` file. To view the rendered file, you can open it with your browser (e.g. `opera *.html`).
 
 ### GUI FastQC
 
@@ -208,7 +208,7 @@ Based on the table below, it seems GC content in our sequences is valid.
 
 ![[Pasted image 20250421121906.png]]
 
-It shows a range of quality values across all bases at each position. **Green area** are good quality calls, **orange area** are calls of reasonable quality and **red area** are calls of poor quality. The quality of calls will degrade as the run progresses, so the drop in quality at the end, as seen above, is not uncommon. 
+It shows a range of quality values across all bases at each position. **Green area** are good quality calls, **orange area** are calls of reasonable quality and **red area** are calls of poor quality. The quality of calls will degrade as the run progresses, so the drop in quality at the end, as seen above, is not uncommon.
 
 This plot can alert us to whether there were any problems occuring during sequencing. Our mean quality (blue line) is consistently in the green area, which means our per base sequence quality of good.
 
@@ -262,7 +262,7 @@ There are quite a few duplicate sequences in our dataset, but I am not sure how 
 
 This model lists all of the sequences which make up more than 0.1 % of the total, but it tracks only the **first 200,000 sequences**, therefore some overrepresented sequences might be missed. Minimum read length is **25bp** and reads longer than **75bp** are **truncated to 50bp**.
 
-The module looks for matches in a database of common contaminants and reports hits if they're found (*possible source* column). If a single sequence is overrepresented, this could mean that it is higly biologically significant or that the library is contaminated. A hit **may** indicate some form of contamination (e.g. adapters). 
+The module looks for matches in a database of common contaminants and reports hits if they're found (*possible source* column). If a single sequence is overrepresented, this could mean that it is higly biologically significant or that the library is contaminated. A hit **may** indicate some form of contamination (e.g. adapters).
 
 There are not hits detected, which could mean that they are less common primers or that some other artifact is present.
 
@@ -299,7 +299,7 @@ Each entry starts with `@` and is followed by a sequence identifier and some oth
 
 #### BASH
 
-Using `grep` and `wc`. Grep is used to search for patterns using regular expression in a file. With `'^@'` we search for every line that starts (`^`) with `@`. It outputs every line that matches our pattern. We pipe this in `wc -l`, as we used before, to count the number of lines. 
+Using `grep` and `wc`. Grep is used to search for patterns using regular expression in a file. With `'^@'` we search for every line that starts (`^`) with `@`. It outputs every line that matches our pattern. We pipe this in `wc -l`, as we used before, to count the number of lines.
 
 ```bash
 grep -e '^@' SRR30833097.fastq | wc -l
@@ -321,7 +321,7 @@ awk 'NR % 4 == 1' SRR30833097.fastq | wc -l
 
 #### Python
 
-I made two scripts, one that uses pattern matching like the BASH command and one that uses calculating the mod of line numbers. They are a little more verbose than the other two options, but still pretty straightforward. 
+I made two scripts, one that uses pattern matching like the BASH command and one that uses calculating the mod of line numbers. They are a little more verbose than the other two options, but still pretty straightforward.
 
 I also measured time needed to process the file to determine which approach is faster.
 
@@ -356,13 +356,13 @@ print(f"time: {final_time}")
 The program outputs:
 
 ```
-$ python3 lines.py SRR30833097.fastq 
+$ python3 lines.py SRR30833097.fastq
 Processing file...
 number of sequences in file: 4537365
 time: 6.220864295959473 sec
 ```
 
-##### Line count calculation 
+##### Line count calculation
 
 These are the only altered lines.
 
@@ -373,23 +373,23 @@ These are the only altered lines.
 with open(fname, "r") as file:
     data = file.readlines()
     n = len(data) / 4
-	
+
 # snip
 ```
 
 ```
-$ python3 nlines.py SRR30833097.fastq 
+$ python3 nlines.py SRR30833097.fastq
 Processing file...
 number of sequences in file: 4537365.0
 time: 4.813834190368652 sec
 ```
 
-The second approach was faster by about 1.4 seconds, which is a difference, but it's not huge, since we are already using a file with 18 million lines. 
+The second approach was faster by about 1.4 seconds, which is a difference, but it's not huge, since we are already using a file with 18 million lines.
 The first one may be more robust since it doesn't make assumptions about line content, while the second one *assumes* we have lines that can be evenly divided by 4.
 
 #### C instead of Python?
 
-Since Python is slow by its nature, maybe a simple C program will do this faster. 
+Since Python is slow by its nature, maybe a simple C program will do this faster.
 
 ##### Pattern matching
 
@@ -447,7 +447,7 @@ int main(int argc, char *argv[]) {
 When we compile and run this program, we get this:
 
 ```
-$ gcc clines.c -o clines.out && ./clines SRR30833097.fastq 
+$ gcc clines.c -o clines.out && ./clines SRR30833097.fastq
 Processing file...
 sequences in file: 4537365
 time: 1.321521 sec
@@ -455,7 +455,7 @@ time: 1.321521 sec
 
 Now this is a great improvement from the Python scripts. Will the second approach with calculating the mod of lines be faster?
 
-##### Line count calculation 
+##### Line count calculation
 
 These are the only altered lines.
 
@@ -475,7 +475,7 @@ These are the only altered lines.
 ```
 
 ```
-$ gcc nclines.c -o nclines.out && ./nclines SRR30833097.fastq 
+$ gcc nclines.c -o nclines.out && ./nclines SRR30833097.fastq
 Processing file...
 sequences in file: 4537365
 time: 1.296595 sec
@@ -499,7 +499,7 @@ My fastqc report was explained above in the [[practical-notebook#Checking qualit
 
 Multiqc report...
 
-# Filtering and trimming based on quality parameters  
+# Filtering and trimming based on quality parameters
 
 This is the **preprocessing** step, where we try and make the quality of our reads better using [fastp](https://github.com/OpenGene/fastp), an ultra-fast all-in-one FASTQ preprocessor. based on the previously generated FastQC report.
 
@@ -615,12 +615,12 @@ PolyX tail trimming is disabled by default, but is similar to polyG tail trimmin
 Since we don't have a great amount (or any, its hard to see) of reads with a polyG tail, I don't think this will improve the quality greatly, but it doesn't make it worse, so I think it's fine to add to our command.
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out-trimpolygx.fq 
---trim_poly_g 
---trim_poly_x 
---html fastp-report-trimpolygx.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out-trimpolygx.fq
+--trim_poly_g
+--trim_poly_x
+--html fastp-report-trimpolygx.html
 --dont_eval_duplication
 ```
 
@@ -653,13 +653,13 @@ There were less reads with polyX tails detected, probably because the polyG trim
 We still have to add some options to our command. We can try adjusting minimum polyX tail length used for detecting. Default is 10. We can try with 5.
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out-trimpolygx5.fq 
---trim_poly_g 
---trim_poly_x 
---poly_x_min_len 5 
---html fastp-report-trimpolygx5.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out-trimpolygx5.fq
+--trim_poly_g
+--trim_poly_x
+--poly_x_min_len 5
+--html fastp-report-trimpolygx5.html
 --dont_eval_duplication
 ```
 
@@ -683,7 +683,7 @@ bases trimmed in polyX tail: 10973224
 ...
 ```
 
-The quality increased by about 0.1% which is something, but not much. 
+The quality increased by about 0.1% which is something, but not much.
 
 - Less reads failed due to being too short.
 - A lot more reads were detected with polyX tail, which seems logical since we lowered the min tail size, but less were trimmed, which seems paradoxical.
@@ -727,13 +727,13 @@ The window size is set using `--cut_window_size` and is 4 by default. The thresh
 Let's see what it does without changing these parameters.
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out-trimpolygxwindow.fq 
---trim_poly_g 
---trim_poly_x 
---cut_tail 
---html fastp-report-trimpolygxwindow.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out-trimpolygxwindow.fq
+--trim_poly_g
+--trim_poly_x
+--cut_tail
+--html fastp-report-trimpolygxwindow.html
 --dont_eval_duplication
 ```
 
@@ -772,14 +772,14 @@ The line dropped again, but it's still just a little bit over the modules thresh
 First, let's try to make the window a bigger size. It says that it stops if the mean quality is more than the threshold, which could in theory mean that it stops immeadiately on the first 4 bases. Let's set the window size to 10 with `--cut_window_size 10`.
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out-trimpolygxwindow20.fq 
---trim_poly_g 
---trim_poly_x 
---cut_tail 
---cut_window_size 10 
---html fastp-report-trimpolygxwindow20.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out-trimpolygxwindow20.fq
+--trim_poly_g
+--trim_poly_x
+--cut_tail
+--cut_window_size 10
+--html fastp-report-trimpolygxwindow20.html
 --dont_eval_duplication
 ```
 
@@ -806,14 +806,14 @@ bases trimmed in polyX tail: 17829600
 The quality increased again, but not by much, even though a lot of reads failed due to low quality. Our reads are not very long, so we shouldn't increase this too much, but let's try with size 20.
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out-trimpolygxwindow20.fq 
---trim_poly_g 
---trim_poly_x 
---cut_tail 
---cut_window_size 20 
---html fastp-report-trimpolygxwindow20.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out-trimpolygxwindow20.fq
+--trim_poly_g
+--trim_poly_x
+--cut_tail
+--cut_window_size 20
+--html fastp-report-trimpolygxwindow20.html
 --dont_eval_duplication
 ```
 
@@ -837,7 +837,7 @@ bases trimmed in polyX tail: 15206635
 ...
 ```
 
-The quality dropped again, since less tails were trimmed. Since we are scanning a bigger window, good quality bases can be included in the mean quality calculation and consequently low quality tails are saved from trimming. 
+The quality dropped again, since less tails were trimmed. Since we are scanning a bigger window, good quality bases can be included in the mean quality calculation and consequently low quality tails are saved from trimming.
 
 ## Increase the threshold in the sliding window
 
@@ -851,15 +851,15 @@ Let's keep window size at 10 and increase the mean quality threshold from defaul
 >So we will set it to 30.
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out-trimpolygxwindow10meanquality30.fq 
---trim_poly_g 
---trim_poly_x 
---cut_tail 
---cut_window_size 10 
---cut_mean_quality 30 
---html fastp-report-trimpolygxwindow10meanquality30.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out-trimpolygxwindow10meanquality30.fq
+--trim_poly_g
+--trim_poly_x
+--cut_tail
+--cut_window_size 10
+--cut_mean_quality 30
+--html fastp-report-trimpolygxwindow10meanquality30.html
 --dont_eval_duplication
 ```
 
@@ -890,31 +890,31 @@ The small adapter content present also went down, which is great.
 ![[Pasted image 20250426191615.png]]
 
 >[!Note] *per base sequence content* and *per sequence GC content*
->These two modules still fail, but if we think logically, the first one can be dependent on the other. 
+>These two modules still fail, but if we think logically, the first one can be dependent on the other.
 >Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn't critical in my opinion.
 
 ## Final command
 
 Now we can remove all generated reports and filtered copies that we won0t need anymore. You're free to keep them, but I think our working directory will be more organized if we keep only one copy.
 
-Remove all files whose names are matched with the pattern `fastp*` 
+Remove all files whose names are matched with the pattern `fastp*`
 
 ```bash
 rm fastp*
 ```
 
-The final command used to filter our fastq data is 
+The final command used to filter our fastq data is
 
 ```bash
-fastp 
--i SRR30833097.fastq 
--o fastp-out.fq 
---trim_poly_g 
---trim_poly_x 
---cut_tail 
---cut_window_size 10 
---cut_mean_quality 30 
---html fastp-report.html 
+fastp
+-i SRR30833097.fastq
+-o fastp-out.fq
+--trim_poly_g
+--trim_poly_x
+--cut_tail
+--cut_window_size 10
+--cut_mean_quality 30
+--html fastp-report.html
 --dont_eval_duplication
 ```
 
