@@ -1,9 +1,3 @@
->[!TODO]
->- [ ] document tools' versions
->- [ ] multiqc report od vseh
-
----
-
 # General instructions
 
 Instructions for filling in the worksheets:
@@ -1032,7 +1026,36 @@ ATGTCGTGCTGCAAGAAGTACGCCGTCTGCTGGATTATCCTGGTGGTGACCGCATTGGGTGTGACCTTGGGTCTGGTTTT
 
 # Alignment using HISAT2
 
-[[alignement using hisat2]]
+HISAT2 is an alignment program for mapping NGS reads against a single reference genome. It outputs alignments in the SAM format. It will build an index over our genome.
+
+Install it with:
+
+```bash
+conda install -c bioconda hisat2
+```
+
+The command we'll use is `hisat2-build`, which will index our reference genome. It takes 2 parameters: 
+
+- `reference_in` : comma-separated list of files with ref sequences.
+- `hisat2_index_base` : writes output files to this *base*name.
+
+In the reference genome directory run:
+
+```bash
+hisat2-build \
+GCF_000001251.4_Release_6_plus_ISO1_MT_genomic.fna \
+genome
+```
+
+The indexes are created in `genome.X.ht2` files. After creating an index, we can use the `hisat2` command to create pairwise alignments:
+
+```bash
+hisat2 -x genome -U ../../../fastp-out.fq -S HisatAlignment.sam
+```
+
+- `-x <ht2-idx>` : prefix of files with indexes.
+- `-U <r>` : files with unpaired reads.
+- `-S <sam>` : file for SAM output.
 
 # Quantifying the expression of transcripts using RNA- seq data with Salmon
 
