@@ -23,9 +23,7 @@ An advantage that **Conda** provides is not only for managing Python libraries, 
 I recommend installing Conda with these instructions: [docs.conda.io/projects/conda/en/latest/user-guide/install/index.html](docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
 Essentially the difference between Miniconda and Anaconda is that with Miniconda you have to install many tools manually. Install whichever you like.
 
-### Bioconda
-
-To use certain bioinformatics tools, we need to use the **Bioconda** channel. No installation is needed, only this 3 commands that alter your `.condarc` configuration:
+To use certain bioinformatics tools, use the **Bioconda** channel. No installation is needed, only this 3 commands that alter your `.condarc` configuration:
 
 ```bash
 conda config --add channels bioconda
@@ -33,44 +31,37 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-## Virtual environment
-
-Finally, we can create an environment for this project using:
+Finally, create an environment for this project using:
 
 ```bash
 conda create --name ans
 ```
 
-Answer the prompt with yes to create an environment and then **activate** the environment with `conda activate ans`. Activation of the environment is local to a terminal session, so you will have to use this command again if you open another terminal instance.
-To deactivate it simply run `conda deactivate`.
+Answer the prompt with yes to create an environment and then **activate** the environment with `conda activate ans`. Activation of the environment is local to a terminal session, so you will have to use this command again if you open another terminal instance. To deactivate it simply run `conda deactivate`.
 
 # Finding our data
 
 During this course we were tasked to work on the RNA-seq dataset linked to the article titled *"Wolbachia pipientis modulates germline stem cells and gene expression associated with ubiquitination and histone lysine trimethylation to rescue fertility defects in Drosophila"*.
 
-## BioProject accession number
-
-First thing to do is to find this article on **NCBI** or **PubMed**. This can be done with a quick Google search: https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052.
+First thing to do is to find this article on **NCBI** or **PubMed**. This is done with a quick Google search: https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052.
 
 In the article, find the section *Data availability*. There will be an accession number for a **BioProject** (a BioProject is a collection of biological data related to a large-scale research effort).
 
-## SRA accession number
-
-We can search for sequencing data related to this BioProject through the command line using **NCBI Entrez Direct tool**. First we install it in our environment with `conda install bioconda::entrez-direct`. Then we make a query and save the output in `csv` format.
-
-- `esearch` queries the database and returns all accession numbers that match that query
-- `efetch` fetches the data linked to those accession numbers
+Search for sequencing data related to this BioProject through the command line using **NCBI Entrez Direct tool**. First install it in the environment with. Then make a query and save the output in `csv` format.
 
 ```bash
+conda install bioconda::entrez-direct
 esearch -db sra -query PRJNA1166928 | efetch -format runinfo > runinfo.csv
 ```
 
+- `esearch` queries the database and returns all accession numbers that match that query
+- `efetch` fetches the data linked to those accession numbers
 - `-db` specifies an NCBI database to search
 - `-query` specifies the search query
 - `|` pipes the output of the previous command as input for this command
 - `-format` specifies the output format
 
-If we take a quick look at this file, it has many different columns, while we are only interested in the SRA (sequence read archive) accession numbers. We can extract the first column with `cut` on the output of `tail` that will skip the first line (the header):
+Taking a quick look at this file, it has many different columns, while we are only interested in the SRA (sequence read archive) accession numbers. Extract the first column with `cut` on the output of `tail` that will skip the first line (the header):
 
 ```bash
 tail -n +2 runinfo.csv | cut -d ',' -f1 > SraAccList.txt
@@ -79,7 +70,11 @@ tail -n +2 runinfo.csv | cut -d ',' -f1 > SraAccList.txt
 - `-n +2` tells `tail` to start displaying from the second line
 - The `-d` flag is used to specify a delimiter and the `-f1` tells `cut` to extract the first field.
 
-Each of us students had to choose one accession number. I choose **SRR30833097**.  Save this into a file with `echo "SRR30833097" > OurAcc.txt`.
+Each of us students had to choose one accession number. I choose **SRR30833097**.  Save this into a file with 
+
+```bash
+echo "SRR30833097" > OurAcc.txt
+```
 
 ## Questions regarding research and sequencing dataset
 
@@ -90,8 +85,6 @@ To study how *Wolbachia pipientis* influences **gene expression** (particulary t
 ### b) Provide some info about the dataset you will work with and which sequencing technology was used.
 
 ![[Pasted image 20250421105830.png]]
-
----
 
 **Name:**
 - This dataset contains reads from ovarie tissue of infected and uninfected *Drosophiila menogaster* organisms with wild-type genotypes and genotypes with hypomorphed (functional gene with reduced function) *bam* gene.
@@ -130,15 +123,13 @@ This kind of library:
 
 # Downloading data
 
-## Prefetch
+Sequencing data is obtained from the SRA database with the SRA Toolkit. Install it with `conda install -c bioconda sra-tools`.
 
-Sequencing data is obtained from the SRA database with the SRA Toolkit. It can be installed with `conda install -c bioconda sra-tools`.
+**Prefetch** is used to obtain *runs* (sequence files in compressed SRA format). The `--output-file` flag is used to use a file with a list of accession numbers as input. The command creates a directory named after the given accession number, where the downloaded files reside.
 
 ```bash
 prefetch --option-file OurAcc.txt
 ```
-
-**Prefetch** is used to obtain *Runs* (sequence files in compressed SRA format). The `--output-file` flag is used to use a file with a list of accession numbers as input. The command creates a directory named after the given accession number, where the downloaded files reside.
 
 The prefetched runs can be converted into FastQ format using `fasterq-dump`, that takes the created directory as input:
 
@@ -148,7 +139,7 @@ fasterq-dump --skip-technical SRR30833097/
 
 `--skip-technical` returns only biological reads.
 
-Since we have only single-end sequences, it should output a single `.fastq` file in the current directory. You can check that the line count matches 18149460 with:
+Since we have only single-end sequences, it should output a single `.fastq` file in the current directory. Check that the line count matches 18149460 with:
 
 ```bash
 wc -l SRR30833097.fastq
@@ -156,35 +147,29 @@ wc -l SRR30833097.fastq
 
 # Generating a quality report
 
-## a) Run FastQC over your dataset. Explain the results
-
-### Command line FastQC
-
-To get a **full report** on all sequences in our dataset, we can use **FastQC tool**. Install it with `conda install -c bioconda fastqc` and run it on the `.fastq` file.
+To get a **full report** on all sequences in our dataset use the **FastQC tool**.
 
 ```bash
+conda install -c bioconda fastqc
 fastqc SRR30833097.fastq
+mv SRR30833097_fastqc.html pre-filtering_fastqc.html
 ```
 
 The quality report is the generated `.html` file. To view the rendered file, you can open it with your browser (e.g. `opera *.html`).
 
-### GUI FastQC
-
-Alternativelly, you can open a **graphical user interface** of FastQC tool by executing only `fastqc`. This will open a new window where you can open your `.fastq` file and generate and view the report.
+Alternativelly, you can open a **graphical user interface** of FastQC tool by executing only `fastqc` in the terminal. This will open a new window where you can open your `.fastq` file and generate and view the report.
 
 ![[Pasted image 20250418203153.png]]
 
 Click on `File > Open` and select your file. When it's finished, you should see the report. Click on `File > Save report` and save the report in the working directory as `pre-filtertering_fastqc.html`.
 
-### Explaining the results
+## Explaining the results
 
 FastQC shows a summary of modules that were run on our data. On the left there is a **green tick** if the module seems entirely normal, an **orange exclamation mark** if results are slightly abnormal and a **red cross** if they are very unsusual.
 
 It's important to analyse these results in detail, because these three symbols might not show the whole context.
 
->[!warning]
->mislm da mas pngs od grafov v neki mapci v root, dej jih namesto teh screenshotov
-#### Basic Statistics
+### Basic Statistics
 
 ![[Pasted image 20250421121853.png]]
 
@@ -198,7 +183,8 @@ Based on the table below, it seems GC content in our sequences is valid.
 *source: www.researchgate.net/figure/GC-content-of-Human-Mouse-Drosophila-melanogaster-Caenorhabditis-elegans_tbl1_5485258?__cf_chl_tk=CQJZOaB7o7m7DdJQ09Z_pGqtyr92uh63l1kqDyk4nvI-1745314185-1.0.1.1-Js8Lw9JrJD2ALRLlK.cLmPitbjmIqgkt5bpJ_4_iZuc*
 
 > It is also worth noting that the manuals says the Basic Statistics module never raises a warning or an error.
-#### Per base sequence quality
+
+### Per base sequence quality
 
 ![[Pasted image 20250421121906.png]]
 
@@ -206,21 +192,21 @@ It shows a range of quality values across all bases at each position. **Green ar
 
 This plot can alert us to whether there were any problems occuring during sequencing. Our mean quality (blue line) is consistently in the green area, which means our per base sequence quality of good.
 
-#### Per sequence quality scores
+### Per sequence quality scores
 
 ![[Pasted image 20250421121926.png]]
 
 This plot shows us the average quality score per read on the x-axis and the number of sequences with that average on the y-axis. Most of our reads have the highest quality scores.
 
-####  Per base sequence content
+###  Per base sequence content
 
 ![[Pasted image 20250421121941.png]]
 
-This module presents **the proportion of each base position for which each of the 4 DNA bases had been called**. For RNA-seq the beginning is usually all over the place, because of adapters added during library preparation, although in our case there isn't a lot of noise in the beginning, but rather at the end, where the `%A` starts growing rapidly.
+This module presents **the percentage of each base position for which each of the 4 DNA bases had been called**. For RNA-seq the beginning is usually all over the place, because of adapters added during library preparation, although in our case there isn't a lot of noise in the beginning, but rather at the end, where the `%A` starts growing rapidly.
 
 This module will fail when the percentage difference between AT and GC is greater that 20% in any position.
 
-#### Per sequence GC content
+### Per sequence GC content
 
 ![[Pasted image 20250421121950.png]]
 
@@ -228,19 +214,19 @@ This plot shows the GC distribution across all sequences (red) compared to a the
 
 The module will show a failure when our GC distribution doesn't follow the theoretical one. This could indicate **contamination** with another organism within the library (broad peaks) or presence of **over-expressed sequences** (sharp peaks).
 
-#### Per base N content
+### Per base N content
 
 ![[Pasted image 20250421121959.png]]
 
 If a sequencer is unable to make a base call with sufficient confidence then it will substitute an N rather than a conventional base. This plot show that no N's were substituted in our sequences.
 
-#### Sequence Length Distribution
+### Sequence Length Distribution
 
 ![[Pasted image 20250421122009.png]]
 
 This module generates a graph showing the distribution of read sizes. Generally all reads will be the same length (prior to trimming and preprocessing).
 
-#### Sequence Duplication Levels
+### Sequence Duplication Levels
 
 ![[Pasted image 20250421122022.png]]
 
@@ -248,7 +234,7 @@ In a diverse library most sequences will occur only once in the final set. A hig
 
 There are quite a few duplicate sequences in our dataset, but I am not sure how to interpret this.
 
-#### Overrepresented sequences
+### Overrepresented sequences
 
 ![[Pasted image 20250421122035.png]]
 
@@ -260,7 +246,7 @@ The module looks for matches in a database of common contaminants and reports hi
 
 There are not hits detected, which could mean that they are less common primers or that some other artifact is present.
 
-#### Adapter content
+### Adapter content
 
 ![[Pasted image 20250421122129.png]]
 
@@ -268,11 +254,9 @@ This module shows the mean percentage of adapter content or polyA or polyG tail.
 
 A much higher percent of polyA tails was detected. This is not untypical, since our reads came from 3' ends of mRNA molecules and the polyadenilation is a known chemical modification of pre-mRNA molecules.
 
-## b) Exchange FastQC results with your colleagues and run MultiQC to get a joined report for all datasets
-
 # Checking quality of sequences
 
-## Questions
+## Questions regarding read quality
 
 ### a) How is a fastq file composed?
 
@@ -291,15 +275,11 @@ Each entry starts with `@` and is followed by a sequence identifier and some oth
 
 ### b) How can I count the number of reads in a fastq file? Describe different ways to perform that.
 
-#### BASH
-
 Using `grep` and `wc`. Grep is used to search for patterns using regular expression in a file. With `'^@'` we search for every line that starts (`^`) with `@`. It outputs every line that matches our pattern. We pipe this in `wc -l`, as we used before, to count the number of lines.
 
 ```bash
 grep -e '^@' SRR30833097.fastq | wc -l
 ```
-
-#### AWK
 
 The AWK language is useful for pattern scanning and text proccessing. It proccesses files line by line just like `grep`. In this case we don't look for a certain identifier, but we use the fact that every sequence occupies 4 lines to our advantage.
 
@@ -313,13 +293,7 @@ The filtered lines are returned, which we can again pipe into `wc -l`.
 awk 'NR % 4 == 1' SRR30833097.fastq | wc -l
 ```
 
-#### Python
-
-I made two scripts, one that uses pattern matching like the BASH command and one that uses calculating the mod of line numbers. They are a little more verbose than the other two options, but still pretty straightforward.
-
-I also measured time needed to process the file to determine which approach is faster.
-
-##### Pattern matching
+Here's a Python script that works the same way as the grep command.
 
 ```Python
 # lines.py
@@ -356,19 +330,16 @@ number of sequences in file: 4537365
 time: 6.220864295959473 sec
 ```
 
-##### Line count calculation
-
-These are the only altered lines.
+We can modify it to use the tactic we used with AWK.
 
 ```Python
 # nlines.py
-# snip
 
+# --//--
 with open(fname, "r") as file:
     data = file.readlines()
     n = len(data) / 4
-
-# snip
+# --//--
 ```
 
 ```
@@ -378,14 +349,7 @@ number of sequences in file: 4537365.0
 time: 4.813834190368652 sec
 ```
 
-The second approach was faster by about 1.4 seconds, which is a difference, but it's not huge, since we are already using a file with 18 million lines.
-The first one may be more robust since it doesn't make assumptions about line content, while the second one *assumes* we have lines that can be evenly divided by 4.
-
-#### C instead of Python?
-
-Since Python is slow by its nature, maybe a simple C program will do this faster.
-
-##### Pattern matching
+Since Python is slow by its nature, a C program will do this faster.
 
 ```c
 // clines.c
@@ -438,8 +402,6 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-When we compile and run this program, we get this:
-
 ```
 $ gcc clines.c -o clines.out && ./clines SRR30833097.fastq
 Processing file...
@@ -447,20 +409,16 @@ sequences in file: 4537365
 time: 1.321521 sec
 ```
 
-Now this is a great improvement from the Python scripts. Will the second approach with calculating the mod of lines be faster?
-
-##### Line count calculation
-
-These are the only altered lines.
+And the other variation with line calculations.
 
 ```c
   // nclines.c
-  // snip
+  // --//--
   if (argc != 2) {
     printf("Usage: ./nclines.out <fastq-file>");
     exit(1);
   }
-  // snip
+  // --//--
   while (fgets(line, sizeof(line), file) != NULL) {
     n++;
   }
@@ -475,35 +433,29 @@ sequences in file: 4537365
 time: 1.296595 sec
 ```
 
-It's faster by a fraction. Again, not a big difference, but faster nevertheless, since we skip the comparisons for every line and do only one operation more after we read the whole file.
+As you can tell, the C program's are fastest among all, but with it we sacrifice a lot of simplicity that comes with a BASH or AWK one-liner.
 
 ### c) What about the quality of your reads?
 
-Modules that failed:
-
-- per base sequence content
-- per base GC content
-- adapter content
-
-The overall quality can be better, which is what we adress in the next section.
+Modules that failed: per base sequence content, per base GC content, adapter content. The overall quality can be better, which is what we adress in the next section.
 
 ### d) [Describe your fastqc and/or multiqc and interpret the results](https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf)
 
 My fastqc report was explained above in the [[practical-notebook#Checking quality of sequences|Checking quality of sequences]] section.
 
-Multiqc report...
-
 # Filtering and trimming based on quality parameters
 
 This is the **preprocessing** step, where we try and make the quality of our reads better using [fastp](https://github.com/OpenGene/fastp), an ultra-fast all-in-one FASTQ preprocessor. based on the previously generated FastQC report.
 
-First install fastp with conda.
+First install it with conda.
 
 ```bash
 conda install -c bioconda fastp
 ```
 
-The program filters our reads and generates a `fastq` file and a `html` report. We can try running the tool without any flags and check the quality of processed reads.
+The program filters our reads and generates a `fastq` file and a `html` report. Try running the tool without any flags and check the quality of processed reads.
+
+> Go to the end of this section to view the final command used.
 
 ## Minimal trimming
 
@@ -512,7 +464,7 @@ fastp
 -i SRR30833097.fastq
 -o fastp-out-minimal.fq
 --html fastp-report-minimal.html
---dont_eval_duplication # save time and memory
+--dont_eval_duplication
 ```
 
 - `-i` specifies the input fastq file
@@ -520,7 +472,7 @@ fastp
 - `--html` specifies name for the output fastp report
 - `--dont_eval_duplication` to save time and memory by not evaluating duplication rate of reads
 
-The program outputs some text in the terminal. If we inspect it, we can inspect quality of reads before and after filtering.
+The program outputs some text in the terminal. 
 
 ```
 ...
@@ -553,7 +505,7 @@ bases trimmed due to adapters: 0
 - around 90k reads had too low quality
 - around 2k reads were too long
 
-So about 92k reads were removed and our quality increased only by almost 1%. Let's run fastqc again on these filtered reads, to see if they pass.
+So about 92k reads were removed and our quality increased only by almost 1%. Run fastqc again on these filtered reads, to see if they pass.
 
 > If you missed the program's output in the terminal, you can open the generated HTML in the browser.
 
@@ -561,11 +513,11 @@ Runing fastqc on newly generated fastq file as before:
 
 ![[Pasted image 20250426172831.png]]
 
-We can see that the polyA tail situation hasn't improved. This is why we need to add some flags to our `fastp` program, so it can do a better job at filtering low quality reads.
+We see that the polyA tail situation hasn't improved. This is why we  add some flags to our `fastp` program, so it can do a better job at filtering low quality reads.
 
 ## Trim polyX tails
 
-We can try with `--trim_poly_x`, which should (according to the documentation) trim the tails of our reads, where `x` represents any base.
+Try with `--trim_poly_x`, which should (according to the documentation) trim the tails of our reads, where `x` represents any base.
 
 ```bash
 fastp
@@ -644,7 +596,7 @@ There were less reads with polyX tails detected, probably because the polyG trim
 
 ## Adjust minimum polyX tail length
 
-We still have to add some options to our command. We can try adjusting minimum polyX tail length used for detecting. Default is 10. We can try with 5.
+We still have to add some options to our command. Try adjusting minimum polyX tail length used for detecting. Default is 10. We can try with 5.
 
 ```bash
 fastp
@@ -688,7 +640,7 @@ The FastQC report shows that truly less reads were trimmed and consequently the 
 
 ---
 
-We can also try to make the minimum length bigger, but I doubt it will benefit the quality. Let's make it 15 and check the results.
+Try to make the minimum length bigger, but I doubt it will benefit the quality. Let's make it 15 and check the results.
 
 ```
 ...
@@ -714,11 +666,9 @@ As expected, even less reads were trimmed and the quality didn't improve.
 
 ## Use a sliding window
 
-We have to look for alternative options for tail trimming. We can use the `--cut_tail` flag. This will create a sliding window from 3' to 5' end and drop bases in the window, if their mean quality drops below some threshold, otherwise it will stop trimming.
+We have to look for alternative options for tail trimming. Use the `--cut_tail` flag. This will create a sliding window from 3' to 5' end and drop bases in the window, if their mean quality drops below some threshold, otherwise it will stop trimming.
 
 The window size is set using `--cut_window_size` and is 4 by default. The threshold is set using `--cut_tail_mean_quality` and is 20 by default, must be between 1 and 36.
-
-Let's see what it does without changing these parameters.
 
 ```bash
 fastp
@@ -763,7 +713,7 @@ The line dropped again, but it's still just a little bit over the modules thresh
 
 ---
 
-First, let's try to make the window a bigger size. It says that it stops if the mean quality is more than the threshold, which could in theory mean that it stops immeadiately on the first 4 bases. Let's set the window size to 10 with `--cut_window_size 10`.
+Let's make the window a bigger size. It says that it stops if the mean quality is more than the threshold, which could in theory mean that it stops immeadiately on the first 4 bases. Set the window size to 10 with `--cut_window_size 10`.
 
 ```bash
 fastp
@@ -797,7 +747,7 @@ bases trimmed in polyX tail: 17829600
 ...
 ```
 
-The quality increased again, but not by much, even though a lot of reads failed due to low quality. Our reads are not very long, so we shouldn't increase this too much, but let's try with size 20.
+The quality increased again, but not by much, even though a lot of reads failed due to low quality. Our reads are not very long, so we shouldn't increase this too much, but try with size 20.
 
 ```bash
 fastp
@@ -835,7 +785,7 @@ The quality dropped again, since less tails were trimmed. Since we are scanning 
 
 ## Increase the threshold in the sliding window
 
-Let's keep window size at 10 and increase the mean quality threshold from default 20 to max 36. This could potentially eliminate too many bases, but it would trim all reads with low quality tails.
+Keep window size at 10 and increase the mean quality threshold from default 20 to max 36. This could potentially eliminate too many bases, but it would trim all reads with low quality tails.
 
 >[!warning]
 >Although it says that max is 36 on the github page, the command will fail with this value and print:
@@ -889,15 +839,13 @@ The small adapter content present also went down, which is great.
 
 ## Final command
 
-Now we can remove all generated reports and filtered copies that we won0t need anymore. You're free to keep them, but I think our working directory will be more organized if we keep only one copy.
-
-Remove all files whose names are matched with the pattern `fastp*`
+Remove all generated reports and filtered copies that you won't need anymore. Our working directory will be more organized if we keep only one copy.
 
 ```bash
-rm fastp*
+rm fastp* # careful with this if you renamed something to have this prefix during this whole project
 ```
 
-The final command used to filter our fastq data is
+The final command used to filter the fastq data is
 
 ```bash
 fastp
@@ -912,7 +860,7 @@ fastp
 --dont_eval_duplication
 ```
 
-# Downloading the reference genome and an annotation file
+# Downloading the reference genome and annotation file
 
 The reference genome and its annotation can be downloaded using NCBI command line tools. Install them with
 
@@ -952,7 +900,7 @@ mv ncbi_dataset ref_genome
 rm genome.zip
 ```
 
-## Questions
+## Questions regarding genome annotation files
 
 ### a) Describe the GTF
 
@@ -986,7 +934,7 @@ In our GTF file everything except the score and frame could be found.
 
 ### c) How many genes are present?
 
-We can use grep to skip lines with `#` (comments) and then use AWK to check if third column matches "gene":
+Use grep to skip lines with `#` (comments) and then use AWK to check if third column matches "gene":
 
 ```bash
 cat genomic.gtf | grep -v "#" | awk '$3=="gene"' | wc -l
@@ -996,7 +944,7 @@ cat genomic.gtf | grep -v "#" | awk '$3=="gene"' | wc -l
 
 ### d) Provide me the commands and results for counting the number of sequences in the various fasta files (DNA, RNA, protein).
 
-Commands and programs are found in the section [[practical-notebook#b) How can I count the number of reads in a fastq file? Describe different ways to perform that.]].
+Commands and programs are found in the section [[practical-notebook#b) How can I count the number of reads in a fastq file? Describe different ways to perform that.]]
 
 ### e) Describe differences between different genomic fasta files.
 
@@ -1047,7 +995,7 @@ GCF_000001251.4_Release_6_plus_ISO1_MT_genomic.fna \
 genome
 ```
 
-The indexes are created in `genome.X.ht2` files. After creating an index, we can use the `hisat2` command to create pairwise alignments:
+The indexes are created in `genome.X.ht2` files. After creating an index, use the `hisat2` command to create pairwise alignments:
 
 ```bash
 hisat2 -x genome -U ../../../fastp-out.fq -S HisatAlignment.sam
