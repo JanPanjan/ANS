@@ -14,7 +14,7 @@ Instructions for filling in the worksheets:
 
 # Setting up your environment
 
-**Virtual environments** are great, because they let you have separate environments for separate projects. This is advantageous, since one project could rely on a certain package version 3, while some other may require version 4.
+**Virtual environments** are great, because they let you have separate environments for separate projects. This is advantageous, since one project could rely on a certain library version 3, while some other may require version 4 (or even on a Python interpreter).
 
 ## Conda
 
@@ -45,13 +45,22 @@ During this course we were tasked to work on the RNA-seq dataset linked to the a
 
 First thing to do is to find this article on **NCBI** or **PubMed**. This is done with a quick Google search: https://academic.oup.com/genetics/article/229/3/iyae220/7934994#510949052.
 
-In the article, find the section *Data availability*. There will be an accession number for a **BioProject** (a BioProject is a collection of biological data related to a large-scale research effort).
+In the article, find the section *Data availability*. There will be an accession number for a **BioProject** (a BioProject is a collection of biological data related to a large-scale research effort). Create a directory where we'll store all accession numbers and save it into a file:
+
+```bash
+mkdir accession_numbers
+echo "PRJNA1166928" > accession_numbers/BioProjAcc.txt
+```
 
 Search for sequencing data related to this BioProject through the command line using **NCBI Entrez Direct tool**. First install it in the environment with. Then make a query and save the output in `csv` format.
 
 ```bash
 conda install bioconda::entrez-direct
-esearch -db sra -query PRJNA1166928 | efetch -format runinfo > runinfo.csv
+```
+
+```bash
+esearch -db sra -query $(cat accession_numbers/BioProjAcc.txt) |\
+efetch -format runinfo > runinfo.csv
 ```
 
 - `esearch` queries the database and returns all accession numbers that match that query
@@ -64,7 +73,8 @@ esearch -db sra -query PRJNA1166928 | efetch -format runinfo > runinfo.csv
 Taking a quick look at this file, it has many different columns, while we are only interested in the SRA (sequence read archive) accession numbers. Extract the first column with `cut` on the output of `tail` that will skip the first line (the header):
 
 ```bash
-tail -n +2 runinfo.csv | cut -d ',' -f1 > SraAccList.txt
+tail -n +2 runinfo.csv |\
+cut -d ',' -f1 > accession_numbers/SraAccList.txt
 ```
 
 - `-n +2` tells `tail` to start displaying from the second line
@@ -73,7 +83,7 @@ tail -n +2 runinfo.csv | cut -d ',' -f1 > SraAccList.txt
 Each of us students had to choose one accession number. I choose **SRR30833097**.  Save this into a file with 
 
 ```bash
-echo "SRR30833097" > OurAcc.txt
+echo "SRR30833097" > accession_numbers/OurAcc.txt
 ```
 
 ## Questions regarding research and sequencing dataset
@@ -123,13 +133,27 @@ This kind of library:
 
 # Downloading data
 
-Sequencing data is obtained from the SRA database with the SRA Toolkit. Install it with `conda install -c bioconda sra-tools`.
+Sequencing data is obtained from the SRA database with the SRA Toolkit. Install it with 
+
+```bash
+conda install -c bioconda sra-tools
+```
 
 **Prefetch** is used to obtain *runs* (sequence files in compressed SRA format). The `--output-file` flag is used to use a file with a list of accession numbers as input. The command creates a directory named after the given accession number, where the downloaded files reside.
 
 ```bash
-prefetch --option-file OurAcc.txt
+prefetch --option-file accession_numbers/OurAcc.txt
 ```
+
+> [!bug] perl: error while loading shared libraries: libcrypt.so.1: cannot open shared object file: No such file or directory
+>
+> Modern linux distributions have moved away from `libcrypt.so.1`  to `libxcrypt`. If you get this error, the most straightforward fix is to install the missing package, e.g.
+> 
+> ```bash
+> sudo pacman -S libxcrypt-compat
+> ```
+>
+> Try running the prefetch command again. If the error persists, try installing through conda-forge with `conda install sra-tools` since it has top priority.
 
 The prefetched runs can be converted into FastQ format using `fasterq-dump`, that takes the created directory as input:
 
@@ -145,19 +169,44 @@ Since we have only single-end sequences, it should output a single `.fastq` file
 wc -l SRR30833097.fastq
 ```
 
+Remove the prefetched runs and run info since we won't need them anymore.
+
+```bash
+rm -rf SRR30833097 runinfo.csv
+```
+
 # Generating a quality report
 
 To get a **full report** on all sequences in our dataset use the **FastQC tool**.
 
 ```bash
 conda install -c bioconda fastqc
-fastqc SRR30833097.fastq
+```
+
+Make a new directory for FastQC reports.
+
+```bash
+mkdir fastqc_reports
+```
+
+Run it on the generated FastQ file.
+
+```bash
+fastqc SRR30833097.fastq --outdir fastqc_reports
+```
+
+Rename the report to something more meaningful and remove generated `zip` file.
+
+```bash
+cd fastqc_reports
 mv SRR30833097_fastqc.html pre-filtering_fastqc.html
+rm SRR30833097_fastqc.zip
+cd ..
 ```
 
 The quality report is the generated `.html` file. To view the rendered file, you can open it with your browser (e.g. `opera *.html`).
 
-Alternativelly, you can open a **graphical user interface** of FastQC tool by executing only `fastqc` in the terminal. This will open a new window where you can open your `.fastq` file and generate and view the report.
+Alternativelly, you can generate the report with a **graphical user interface** of FastQC by executing `fastqc` in the terminal. This will open a new window where you can open your `.fastq` file and generate and view the report.
 
 ![[Pasted image 20250418203153.png]]
 
@@ -262,7 +311,11 @@ A much higher percent of polyA tails was detected. This is not untypical, since 
 
 FastQ files are text files that combine **FASTA formatted sequences** with their **quality scores** and is the standard format for storing the output of high-throughput sequencing instruments.
 
-Since FastQ files bundle quality scores of sequences, we can take a quick look at the first stored sequence with `head -n 4 SRR30833097.fastq`. This will output
+Since FastQ files bundle quality scores of sequences, we can take a quick look at the first stored sequence with 
+
+```bash
+head -n 4 SRR30833097.fastq
+```
 
 ```
 @SRR30833097.1 NB500947:1144:HM5GMBGXH:1:11101:4455:1091 length=86
@@ -435,6 +488,7 @@ time: 1.296595 sec
 
 As you can tell, the C program's are fastest among all, but with it we sacrifice a lot of simplicity that comes with a BASH or AWK one-liner.
 
+> The scripts are in `scripts` directory.
 ### c) What about the quality of your reads?
 
 Modules that failed: per base sequence content, per base GC content, adapter content. The overall quality can be better, which is what we adress in the next section.
@@ -453,6 +507,13 @@ First install it with conda.
 conda install -c bioconda fastp
 ```
 
+Create a directory for FASTP results.
+
+```bash
+mkdir fastp_results
+cd fast_results
+```
+
 The program filters our reads and generates a `fastq` file and a `html` report. Try running the tool without any flags and check the quality of processed reads.
 
 > Go to the end of this section to view the final command used.
@@ -460,11 +521,11 @@ The program filters our reads and generates a `fastq` file and a `html` report. 
 ## Minimal trimming
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-minimal.fq
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-minimal.fq \
 --html fastp-report-minimal.html
---dont_eval_duplication
+--dont_eval_duplication \
 ```
 
 - `-i` specifies the input fastq file
@@ -511,6 +572,10 @@ So about 92k reads were removed and our quality increased only by almost 1%. Run
 
 Runing fastqc on newly generated fastq file as before:
 
+```bash
+fastqc fastp-out-minimal.fq --out-dir ../fastqc_reports
+```
+
 ![[Pasted image 20250426172831.png]]
 
 We see that the polyA tail situation hasn't improved. This is why we  add some flags to our `fastp` program, so it can do a better job at filtering low quality reads.
@@ -520,11 +585,11 @@ We see that the polyA tail situation hasn't improved. This is why we  add some f
 Try with `--trim_poly_x`, which should (according to the documentation) trim the tails of our reads, where `x` represents any base.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolyx.fq
---trim_poly_x
---html fastp-report-trimpolyx.html
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolyx.fq \
+--trim_poly_x \
+--html fastp-report-trimpolyx.html \
 --dont_eval_duplication
 ```
 
@@ -561,13 +626,13 @@ PolyX tail trimming is disabled by default, but is similar to polyG tail trimmin
 Since we don't have a great amount (or any, its hard to see) of reads with a polyG tail, I don't think this will improve the quality greatly, but it doesn't make it worse, so I think it's fine to add to our command.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolygx.fq
---trim_poly_g
---trim_poly_x
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolygx.fq \
+--trim_poly_g \
+--trim_poly_x \
 --html fastp-report-trimpolygx.html
---dont_eval_duplication
+--dont_eval_duplication \
 ```
 
 ```
@@ -599,13 +664,13 @@ There were less reads with polyX tails detected, probably because the polyG trim
 We still have to add some options to our command. Try adjusting minimum polyX tail length used for detecting. Default is 10. We can try with 5.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolygx5.fq
---trim_poly_g
---trim_poly_x
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolygx5.fq \
+--trim_poly_g \
+--trim_poly_x \
 --poly_x_min_len 5
---html fastp-report-trimpolygx5.html
+--html fastp-report-trimpolygx5.html \
 --dont_eval_duplication
 ```
 
@@ -671,13 +736,13 @@ We have to look for alternative options for tail trimming. Use the `--cut_tail` 
 The window size is set using `--cut_window_size` and is 4 by default. The threshold is set using `--cut_tail_mean_quality` and is 20 by default, must be between 1 and 36.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolygxwindow.fq
---trim_poly_g
---trim_poly_x
---cut_tail
---html fastp-report-trimpolygxwindow.html
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolygxwindow.fq \
+--trim_poly_g \
+--trim_poly_x \
+--cut_tail \
+--html fastp-report-trimpolygxwindow.html \
 --dont_eval_duplication
 ```
 
@@ -716,15 +781,15 @@ The line dropped again, but it's still just a little bit over the modules thresh
 Let's make the window a bigger size. It says that it stops if the mean quality is more than the threshold, which could in theory mean that it stops immeadiately on the first 4 bases. Set the window size to 10 with `--cut_window_size 10`.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolygxwindow20.fq
---trim_poly_g
---trim_poly_x
---cut_tail
---cut_window_size 10
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolygxwindow20.fq \
+--trim_poly_g \
+--trim_poly_x \
+--cut_tail \
+--cut_window_size 10 \
 --html fastp-report-trimpolygxwindow20.html
---dont_eval_duplication
+--dont_eval_duplication \
 ```
 
 ```
@@ -750,15 +815,15 @@ bases trimmed in polyX tail: 17829600
 The quality increased again, but not by much, even though a lot of reads failed due to low quality. Our reads are not very long, so we shouldn't increase this too much, but try with size 20.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolygxwindow20.fq
---trim_poly_g
---trim_poly_x
---cut_tail
---cut_window_size 20
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolygxwindow20.fq \
+--trim_poly_g \
+--trim_poly_x \
+--cut_tail \
+--cut_window_size 20 \
 --html fastp-report-trimpolygxwindow20.html
---dont_eval_duplication
+--dont_eval_duplication \
 ```
 
 ```
@@ -795,15 +860,15 @@ Keep window size at 10 and increase the mean quality threshold from default 20 t
 >So we will set it to 30.
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out-trimpolygxwindow10meanquality30.fq
---trim_poly_g
---trim_poly_x
---cut_tail
---cut_window_size 10
---cut_mean_quality 30
---html fastp-report-trimpolygxwindow10meanquality30.html
+fastp \
+-i ../SRR30833097.fastq \
+-o fastp-out-trimpolygxwindow10meanquality30.fq \
+--trim_poly_g \
+--trim_poly_x \
+--cut_tail \
+--cut_window_size 10 \
+--cut_mean_quality 30 \
+--html fastp-report-trimpolygxwindow10meanquality30.html \
 --dont_eval_duplication
 ```
 
@@ -848,16 +913,32 @@ rm fastp* # careful with this if you renamed something to have this prefix durin
 The final command used to filter the fastq data is
 
 ```bash
-fastp
--i SRR30833097.fastq
--o fastp-out.fq
---trim_poly_g
---trim_poly_x
---cut_tail
---cut_window_size 10
---cut_mean_quality 30
---html fastp-report.html
+fastp \
+-i ../SRR30833097.fastq \
+-o filtered-reads.fq \
+--trim_poly_g \
+--trim_poly_x \
+--cut_tail \
+--cut_window_size 10 \
+--cut_mean_quality 30 \
+--html filtered-reads.html \
 --dont_eval_duplication
+```
+
+Run FastQC again on filtered reads.
+
+```bash
+fastqc filtered-reads.fq --outdir ../fastqc_reports
+```
+
+Rename the report.
+
+```bash
+cd .. # make sure this puts you in root directory
+cd fastqc_reports
+mv filtered-reads_fastqc.html post-filtering_fastqc.html
+rm *.zip
+cd ..
 ```
 
 # Downloading the reference genome and annotation file
@@ -865,7 +946,7 @@ fastp
 The reference genome and its annotation can be downloaded using NCBI command line tools. Install them with
 
 ```bash
-conda install conda-forge::ncbi-datasets-cli
+conda install -c conda-forge ncbi-datasets-cli
 ```
 
 To find its accession number, got to [NCBI](https://www.ncbi.nlm.nih.gov/) and search *drosophila melanogaster*. Click on the genome section:
@@ -875,16 +956,15 @@ To find its accession number, got to [NCBI](https://www.ncbi.nlm.nih.gov/) and s
 Copy and echo the RefSeq/GenBank accession number into a file:
 
 ```bash
-echo "GCF_000001215.4" > RefGenAcc.txt
+echo "GCF_000001215.4" > accession_numbers/RefGenAcc.txt
 ```
 
 To download the reference genome execute the following command:
 
 ```bash
-datasets download genome \
-> accession $(cat RefGenAcc.txt) \
-> --include genome,rna,protein,cds,gff3,gtf \
-> --filename genome.zip
+datasets download genome accession $(cat accession_numbers/RefGenAcc.txt) \
+--include genome,rna,protein,cds,gff3,gtf \
+--filename genome.zip
 ```
 
 - `genome` : since we want to download a genome
@@ -894,11 +974,44 @@ datasets download genome \
 
 Unzip the downloaded file, rename it to something else and remove the zip:
 
+> Make sure `unzip` is installed on your system.
+
 ```bash
 unzip genome.zip # unzips into "ncbi_dataset/" directory 
 mv ncbi_dataset ref_genome
-rm genome.zip
+rm genome.zip md5sum.txt README.md
 ```
+
+Remove unneccessary files and move reference genome files into `ref_genome`. 
+
+```bash
+mv ref_genome/data/GCF_000001215.4/* ref_genome/
+rm -rf ref_genome/data/
+```
+
+Make sure to run `ls -l ref_genome/` after. It should look like:
+
+```
+total 671356
+-rw------- 1 X X  71855323 May 20 13:25 cds_from_genomic.fna
+-rw------- 1 X X 145657746 May 20 13:25 GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna
+-rw------- 1 X X 164988613 May 20 13:26 genomic.gff
+-rw------- 1 X X 185199259 May 20 13:26 genomic.gtf
+-rw------- 1 X X  22970738 May 20 13:26 protein.faa
+-rw------- 1 X X  96785880 May 20 13:26 rna.fna
+```
+
+> `X` will be your username.
+
+Rename the genome assembly to something more readable.
+
+```bash
+mv ref_genome/GCF* ref_genome/GCF_000001215.4.fna
+```
+
+We downloaded coding DNA sequences, a RefSeq genome assembly, protein sequences, RNA sequences and annonation files (`gff` and `gtf`).
+
+> RefSeq genome assemblies are NCBI-derived and mantained copies of GenBank assemblies (GCA), that include annotation, while the GCA might not.
 
 ## Questions regarding genome annotation files
 
@@ -987,23 +1100,30 @@ The command we'll use is `hisat2-build`, which will index our reference genome. 
 - `reference_in` : comma-separated list of files with ref sequences.
 - `hisat2_index_base` : writes output files to this *base*name.
 
-In the reference genome directory run:
+Move into `ref_genome` and run:
 
 ```bash
 hisat2-build \
-GCF_000001251.4_Release_6_plus_ISO1_MT_genomic.fna \
-genome
+GCF_000001215.4.fna \
+genome \
+-p 8
 ```
 
-The indexes are created in `genome.X.ht2` files. After creating an index, use the `hisat2` command to create pairwise alignments:
+`-p` is the number of threads we wan't hisat2-build to spawn (more threads = more speed, but depends on your CPU, so be mindful).
+
+The indexes are created in `genome.X.ht2` files. After creating an index, use the `hisat2` command to create pairwise alignments with our filtered reads. Move back to root and run:
 
 ```bash
-hisat2 -x genome -U ../../../fastp-out.fq -S HisatAlignment.sam
+hisat2 \
+-x ref_genome/genome \
+-U fastp_results/filtered-reads.fq \
+-S hisat_alignment/HisatAlignment.sam \
+-p 8
 ```
 
-- `-x <ht2-idx>` : prefix of files with indexes.
-- `-U <r>` : files with unpaired reads.
-- `-S <sam>` : file for SAM output.
+- `-x` : prefix of files with indexes.
+- `-U` : files with unpaired reads.
+- `-S` : file for SAM output.
 
 # Quantifying the expression of transcripts using RNA- seq data with Salmon
 
