@@ -17,4 +17,4 @@
 
 ---
 
-Laboratory notebook: [[practical-notebook]]
+Laboratory notebook: [[faks/ANS/notebook/README]]

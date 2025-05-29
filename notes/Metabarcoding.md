@@ -37,7 +37,7 @@ Once the sequencing is done, the **bioinformatics data analysis** part is next.
 
 [[Demultiplexing]] : separating sequences
 
-General [[practical-notebook#Filtering and trimming based on quality parameters|quality control]] steps to trim and discard low quality reads.
+General [[faks/ANS/notebook/README#Filtering and trimming based on quality parameters|quality control]] steps to trim and discard low quality reads.
 
 [[Denoising sequences in metabarcoding|Denoising]] / [[Clustering of sequences in metabarcoding|clustering]]  : processing of sequences to identify unique biological sequences present in the sample.
 

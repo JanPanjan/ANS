@@ -17,3 +17,7 @@
 
 # everything from ref_genome...
 */ref_genome/*
+
+notebook/*
+!notebook/notes
+!notebook/README.md
