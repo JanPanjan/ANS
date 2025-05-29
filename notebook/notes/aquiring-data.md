@@ -137,7 +137,7 @@ conda install -c bioconda sra-tools
 prefetch --option-file accession_numbers/OurAcc.txt
 ```
 
-> [!bug] perl: error while loading shared libraries: libcrypt.so.1: cannot open shared object file: No such file or directory
+> [!CAUTION] perl: error while loading shared libraries: libcrypt.so.1: cannot open shared object file: No such file or directory
 >
 > Modern linux distributions have moved away from `libcrypt.so.1`  to `libxcrypt`. If you get this error, the most straightforward fix is to install the missing package, e.g.
 >

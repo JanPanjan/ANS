@@ -1,3 +1,9 @@
+---
+id: preprocessing-aligning-quantifying-expression
+aliases: []
+tags: []
+---
+
 # Filtering and trimming based on quality parameters
 
 This is the **preprocessing** step, where we try and make the quality of our reads better using [fastp](https://github.com/OpenGene/fastp), an ultra-fast all-in-one FASTQ preprocessor. based on the previously generated FastQC report.
@@ -34,7 +40,7 @@ fastp \
 - `--html` specifies name for the output fastp report
 - `--dont_eval_duplication` to save time and memory by not evaluating duplication rate of reads
 
-The program outputs some text in the terminal. 
+The program outputs some text in the terminal.
 
 ```
 ...
@@ -353,12 +359,12 @@ The quality dropped again, since less tails were trimmed. Since we are scanning 
 
 Keep window size at 10 and increase the mean quality threshold from default 20 to max 36. This could potentially eliminate too many bases, but it would trim all reads with low quality tails.
 
->[!warning]
->Although it says that max is 36 on the github page, the command will fail with this value and print:
->```bash
-> ERROR: the mean quality requirement for cutting by quality (--cut_mean_quality) should be 1 ~ 30, suggest 15 ~ 20.
->```
->So we will set it to 30.
+> [!WARNING]
+> Although it says that max is 36 on the github page, the command will fail with this value and print:
+> ```bash
+>  ERROR: the mean quality requirement for cutting by quality (--cut_mean_quality) should be 1 ~ 30, suggest 15 ~ 20.
+> ```
+> So we will set it to 30.
 
 ```bash
 fastp \
@@ -399,9 +405,9 @@ The small adapter content present also went down, which is great.
 
 ![[Pasted image 20250426191615.png]]
 
->[!Note] *per base sequence content* and *per sequence GC content*
->These two modules still fail, but if we think logically, the first one can be dependent on the other.
->Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn't critical in my opinion.
+> [!NOTE] *per base sequence content* and *per sequence GC content*
+> These two modules still fail, but if we think logically, the first one can be dependent on the other.
+> Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn't critical in my opinion.
 
 ## Final command
 
@@ -478,12 +484,12 @@ Unzip the downloaded file, rename it to something else and remove the zip:
 > Make sure `unzip` is installed on your system.
 
 ```bash
-unzip genome.zip # unzips into "ncbi_dataset/" directory 
+unzip genome.zip # unzips into "ncbi_dataset/" directory
 mv ncbi_dataset ref_genome
 rm genome.zip md5sum.txt README.md
 ```
 
-Remove unneccessary files and move reference genome files into `ref_genome`. 
+Remove unneccessary files and move reference genome files into `ref_genome`.
 
 ```bash
 mv ref_genome/data/GCF_000001215.4/* ref_genome/
@@ -603,7 +609,7 @@ mkdir -p ref_genome/hisat_index # run this in root
 cd ref_genome/hisat_index
 ```
 
-The command we'll use is `hisat2-build`, which will index our reference genome. It takes 2 parameters: 
+The command we'll use is `hisat2-build`, which will index our reference genome. It takes 2 parameters:
 
 - `reference_in` : comma-separated list of files with ref sequences.
 - `hisat2_index_base` : writes output files to this *base*name.
@@ -702,8 +708,4 @@ salmon quant \
 
 ## Output
 
-The output is a quantification file (`.sf`), plain text, tab-separated file with a single header. It's named `quant.sf`. 
-
----
-
-<< [[aquiring-data]] | [[counting-number-of-reads-per-gene]] >>
+The output is a quantification file (`.sf`), plain text, tab-separated file with a single header. It's named `quant.sf`.
