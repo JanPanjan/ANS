@@ -2,6 +2,7 @@
 >
 > - [ ] copy every photo in this document from `ANS/files` to `ANS/notebook/files`.
 > - [ ] split the notebook to sections
+> - [ ] make a github.io page for this project
 
 Instructions for filling in the worksheets:
 
