@@ -405,7 +405,10 @@ The small adapter content present also went down, which is great.
 
 ![[Pasted image 20250426191615.png]]
 
-> [!NOTE] *per base sequence content* and *per sequence GC content*
+> [!NOTE]
+>
+> *per base sequence content* and *per sequence GC content*
+>
 > These two modules still fail, but if we think logically, the first one can be dependent on the other.
 > Since our reads have skewed distribution of bases, the second one fails and with it the first one fails too, but this isn't critical in my opinion.
 
