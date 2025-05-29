@@ -1,3 +1,9 @@
+---
+id: aquiring-data
+aliases: []
+tags: []
+---
+
 # Setting up your environment
 
 **Virtual environments** are great, because they let you have separate environments for separate projects. This is advantageous, since one project could rely on a certain library version 3, while some other may require version 4 (or even on a Python interpreter).
@@ -482,7 +488,3 @@ Modules that failed: per base sequence content, per base GC content, adapter con
 ### d) [Describe your fastqc and/or multiqc and interpret the results](https://mugenomicscore.missouri.edu/PDF/FastQC_Manual.pdf)
 
 My fastqc report was explained above in the [[faks/ANS/notebook/README#Checking quality of sequences|Checking quality of sequences]] section.
-
----
-
-<< [[faks/ANS/notebook/README|README]] | [[preprocessing-aligning-quantifying-expression]] >>

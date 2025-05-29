@@ -1,3 +1,9 @@
+---
+id: counting-number-of-reads-per-gene
+aliases: []
+tags: []
+---
+
 # Converting SAM to BAM format and sorting sequences according to the genomic coordinates
 
 After the alignment is produced, reads are in **random order** with respect to their **position in the reference genome**. To examine the alignment with IGV or Tablet, BAM should be **sorted** and **indexes** of BAM and FASTA files should be created.
@@ -47,7 +53,3 @@ Create the index.
 samtools faidx GCF*.fna
 mv GCF*.fna.fai samtools_index # move the index
 ```
-
----
-
-<< [[preprocessing, aligning, quantifying expression]] | [[]] >>

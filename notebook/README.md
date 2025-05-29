@@ -1,4 +1,4 @@
-> [!todo]
+> [!TODO]
 > - [ ] copy every photo in this document from `ANS/files` to `ANS/notebook/files`.
 > - [ ] split the notebook to sections
 
@@ -14,6 +14,6 @@ Instructions for filling in the worksheets:
 
 ---
 
-1. [[aquiring-data]]
-2. [[counting-number-of-reads-per-gene]]
-3. [[preprocessing-aligning-quantifying-expression]]
+1. [aquiring-data](/notebook/notes/aquiring-data.md)
+2. [counting-number-of-reads-per-gene](/notebook/notes/counting-number-of-reads-per-gene.md)
+3. [preprocessing-aligning-quantifying-expression](/notes/Preprocessing.md)
