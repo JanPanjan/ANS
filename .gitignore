@@ -19,5 +19,8 @@
 */ref_genome/*
 
 notebook/*
-!notebook/notes
+!notebook/docs
+!notebook/scripts
+!notebook/files
 !notebook/README.md
+!notebook/*sh
